@@ -128,7 +128,7 @@ const menuSections = [
   {
     label: "SYSTEM",
     items: [
-      { title: "Setting", url: "/setting", icon: Settings, hasArrow: false },
+      { title: "Setting", url: "/settings", icon: Settings, hasArrow: false },
       { title: "Profile", url: "/profile", icon: UserCircle, hasArrow: false },
       { title: "Logout", url: "/logout", icon: LogOut, hasArrow: false },
     ],
