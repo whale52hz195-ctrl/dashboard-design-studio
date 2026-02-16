@@ -1,60 +1,83 @@
 
 
-# داشبورد إدارة تطبيق تواصل اجتماعي (Tingle-style)
+# صفحة Settings كاملة
 
-## التصميم العام
-- **ثيم داكن (Dark Theme)** بألوان بنفسجية/أرجوانية كما في الصور
-- **Sidebar جانبي** ثابت مع أقسام مقسمة بعناوين (User Management, Banner, Content, Engagement, إلخ)
-- **شريط علوي** يحتوي على بحث وأيقونة المستخدم
-- تصميم responsive يتناسب مع الشاشات المختلفة
+## الوصف
+بناء صفحة Settings شاملة بنفس التصميم الموجود في الصور، تحتوي على 10 تابات (tabs) مع محتوى كل تاب.
 
-## الصفحات المطلوبة
+## الهيكل العام
+- صفحة واحدة `src/pages/Settings.tsx` تحتوي على شريط تابات أفقي قابل للتمرير
+- التابات: General, Payment, Content Moderation, Report Reasons, Currency, Withdrawal, Profile Management, Audio Management, Video Management, Game
+- كل تاب يعرض محتوى مختلف مع زر "Save Changes" بنفسجي في الأعلى
 
-### 1. صفحة تسجيل الدخول (Login)
-- تصميم split-screen: الجهة اليسرى صورة ترحيبية بخلفية بنفسجية، الجهة اليمنى فورم تسجيل الدخول
-- حقول: Email, Password مع خيار "Remember me" و "Forgot Password"
-- زر Login وزر Demo Login
+## تفاصيل كل تاب
 
-### 2. صفحة الداشبورد الرئيسية (Dashboard)
-- بطاقات إحصائيات (Total Users, VIP Users, Total Hosts, إلخ)
-- رسم بياني Activity Overview (باستخدام Recharts)
-- قائمة Top Contributors و Recent Users و Top Likers في الجانب الأيمن
-- Top Earning Hosts و Top Performing Agencies
+### 1. General Setting
+- Call Rate Setting: حقلين (Private Video Call Rate, Private Audio Call Rate) بوحدة coins/minute
+- App Setting: حقول (Login Bonus, Duration of Shorts, PK End Time, Admin Rate)
+- Agora Setting: حقلين (Agora App ID, Agora App Certificate)
+- Banner Announcement Setting: حقلين (Minimum Gift/Game announcement coin)
+- Fake Data Setting: toggle لتفعيل Fake Data
+- Policy Links: حقلين (Privacy Policy Link, Terms of Use Policy Link)
+- Shorts Effect Setting: toggle + حقلين License Key
+- Watermark Setting: toggle + منطقة رفع صورة
+- Lucky Gift Setting: حقلين (Admin Tax Percent, Receiver Share Percent)
+- Firebase Notification Setting: textarea لـ Private Key JSON
 
-### 3. إدارة المستخدمين (User Management)
-- بطاقات ملخص (Total Users, Males, Females, VIP)
-- فلاتر (Real Users, Status, Role)
-- جدول بيانات المستخدمين مع أعمدة: User, Role, User Type, Coin, Status, UniqueID, Gender, Age, Country, Followers
-- بحث وفلترة بالتاريخ
+### 2. Payment Setting
+- Stripe Setting: toggle + حقلين (Publishable Key, Secret Key)
+- Razorpay Setting: toggle + حقلين (ID, Secret Key)
+- Flutterwave Setting: toggle + حقل (Flutterwave ID)
+- Google Play Setting: toggle + حقلين (Service Account Email, Private Key)
 
-### 4. التحقق من المستخدمين (User Verification)
-- تابات: Pending, Approved, Rejected
-- جدول بأعمدة: User, UniqueID, IDProof, IDProof Image, Selfie Image, Status, Address, Application Date, Action
+### 3. Content Moderation
+- Sightengine config: حقلين (User, API Secret)
+- Content Moderation Keywords: select منسدلين (Video Banned Keywords, Post Banned Keywords)
 
-### 5. طلبات الاستضافة (Host Application)
-- تابات: Pending, Approved, Rejected
-- جدول بأعمدة: User, Agency, Status, Application Date
+### 4. Report Reasons
+- جدول بأعمدة: Title, Created At, Updated At, Actions (edit/delete)
+- زر "+ Add New Reason"
+- Dialog للتعديل/الإضافة بحقل Reason Title
 
-### 6. إدارة المضيفين (Host Management)
-- بطاقات ملخص (Total Hosts, Males, Females, VIP Hosts)
-- جدول بيانات المضيفين مع: Agency, Host, UniqueID, Gender, Age, Coin, Country, Followers, Followings, Friends
+### 5. Currency Setting
+- جدول بأعمدة: Name, Symbol, Country Code, Currency Code, Default (star), Actions
+- زر "+ Add Currency"
 
-### 7. إدارة الوكالات (Agencies)
-- جدول بأعمدة: Agency, User, Country, Contact Email, Mobile, Commission, Hosts, Host Earnings
-- زر "+ Create Agency" يفتح Dialog لإنشاء وكالة جديدة
-- فورم الإنشاء: Select User, Agency Name, Contact Email, Mobile, Commission Rate, Country, Description, Agency Logo
+### 6. Withdrawal Setting
+- Minimum Coin Setting: حقول (Currency, Coins, Minimum Coins Payout For User, Minimum Coins Payout For Agency)
 
-### 8. تجار العملات (Coin Traders)
-- جدول بأعمدة: User, UniqueID, Coin Balance, Spent Coins, Mobile, Created Date, Status, Actions
-- زر "+ Add Coin Trader"
-- فلترة بالتاريخ وبحث
+### 7. Profile Management
+- شبكة صور دائرية مع زر رفع صورة (dashed circle) وزر "Remove" تحت كل صورة
 
-### 9. إدارة البانرات (Splash Banner)
-- جدول بأعمدة: Image, Redirect URL, Status (toggle), Created Date, Last Updated, Actions
-- زر "+ Add Banner"
-- إمكانية تعديل وحذف
+### 8. Audio Management
+- منطقة رفع ملف صوتي (dashed circle) مع عرض الملف المرفوع بشكل دائري بنفسجي مع زر تشغيل وشريط تقدم
 
-## البيانات
-- جميع البيانات ستكون وهمية (mock data) مدمجة في الكود
-- لا يوجد backend أو قاعدة بيانات
+### 9. Video Management
+- نفس فكرة Audio Management لكن لملفات الفيديو
+
+### 10. Game (Game Bet Management)
+- حقول Bet 1-5 بوحدة Coin مع وصف
+
+## التفاصيل التقنية
+
+### الملفات المطلوبة
+1. **`src/pages/Settings.tsx`** - الصفحة الرئيسية مع كل التابات والمحتوى
+2. **`src/data/mockSettingsData.ts`** - البيانات الوهمية (report reasons, currencies, profile images, etc.)
+3. **تعديل `src/App.tsx`** - إضافة route `/settings`
+4. **تعديل `src/components/layout/AppSidebar.tsx`** - تحديث رابط Setting ليشير لـ `/settings`
+
+### التصميم
+- نفس الثيم الداكن البنفسجي المستخدم في باقي الداشبورد
+- كل section محاط بـ border مع عنوان وأيقونة info
+- الحقول بخلفية داكنة مع labels بلون رمادي فاتح
+- الـ toggles بلون بنفسجي عند التفعيل
+- التابات النشطة بلون بنفسجي مع underline
+
+### المكونات المستخدمة
+- Tabs من shadcn/ui للتنقل بين الأقسام
+- Switch للـ toggles
+- Input للحقول النصية والرقمية
+- Dialog لتعديل/إضافة Report Reasons و Currencies
+- Table لعرض Report Reasons و Currencies
+- Select للـ dropdowns
 
