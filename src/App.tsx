@@ -14,12 +14,14 @@ import CoinTraders from "./pages/CoinTraders";
 import SplashBanner from "./pages/SplashBanner";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import { StoreRides, StoreThemes, StoreFrames } from "./pages/Store";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <Toaster />
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -39,6 +41,9 @@ const App = () => (
           <Route path="/agencies" element={<Agencies />} />
           <Route path="/coin-traders" element={<CoinTraders />} />
           <Route path="/coin-trader" element={<CoinTraders />} />
+          <Route path="/store/rides" element={<StoreRides />} />
+          <Route path="/store/themes" element={<StoreThemes />} />
+          <Route path="/store/frames" element={<StoreFrames />} />
           <Route path="/banners" element={<SplashBanner />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/setting" element={<Settings />} />
