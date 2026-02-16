@@ -12,6 +12,7 @@ import HostManagement from "./pages/HostManagement";
 import Agencies from "./pages/Agencies";
 import CoinTraders from "./pages/CoinTraders";
 import SplashBanner from "./pages/SplashBanner";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,8 @@ const App = () => (
           <Route path="/coin-traders" element={<CoinTraders />} />
           <Route path="/coin-trader" element={<CoinTraders />} />
           <Route path="/banners" element={<SplashBanner />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/setting" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
