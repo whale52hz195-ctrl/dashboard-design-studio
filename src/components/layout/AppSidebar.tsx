@@ -191,7 +191,7 @@ export function AppSidebar() {
                             {item.subItems.map((subItem) => (
                               <SidebarMenuButton key={subItem}>
                                 <NavLink
-                                  to={`/${item.title.toLowerCase()}/${subItem.toLowerCase()}`}
+                                  to={`/store/${subItem.toLowerCase()}s`}
                                   className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-purple-600/10 transition-colors w-full text-left text-sm"
                                   activeClassName="bg-purple-600/20 text-purple-400 font-medium"
                                 >
