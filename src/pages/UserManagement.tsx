@@ -294,8 +294,8 @@ const UserManagement = () => {
                 <p className="text-sm text-muted-foreground">Males</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{stats.males}</p>
               </div>
-              <div className="h-12 w-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                <UserCheck className="h-6 w-6 text-purple-500" />
+              <div className="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                <UserCheck className="h-6 w-6 text-primary" />
               </div>
             </div>
           </Card>

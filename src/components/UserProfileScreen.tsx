@@ -263,7 +263,7 @@ const UserProfileScreen = ({ user, open, onClose }: UserProfileScreenProps) => {
                       <div className="text-sm text-muted-foreground">Received Coins</div>
                     </div>
                     <div className="text-center">
-                      <Gift className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                      <Gift className="h-8 w-8 text-primary mx-auto mb-2" />
                       <div className="text-lg font-bold text-foreground">0</div>
                       <div className="text-sm text-muted-foreground">Received Gifts</div>
                     </div>

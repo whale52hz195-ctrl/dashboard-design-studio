@@ -36,104 +36,106 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { useState } from "react";
+import { useLanguage } from "@/lib/i18n";
 
 const menuSections = [
   {
-    label: "Dashboard",
+    labelKey: "sidebar.dashboard",
     items: [
-      { title: "Dashboard", url: "/dashboard", icon: Home, hasArrow: false },
+      { titleKey: "sidebar.dashboard", url: "/dashboard", icon: Home, hasArrow: false },
     ],
   },
   {
-    label: "USER MANAGEMENT",
+    labelKey: "sidebar.userManagement",
     items: [
-      { title: "User", url: "/user", icon: User, hasArrow: false },
-      { title: "User Verification", url: "/user-verification", icon: UserCheck, hasArrow: false },
-      { title: "Host Application", url: "/host-application", icon: FileText, hasArrow: false },
-      { title: "Coin Trader", url: "/coin-trader", icon: Coins, hasArrow: false },
+      { titleKey: "sidebar.user", url: "/user", icon: User, hasArrow: false },
+      { titleKey: "sidebar.userVerification", url: "/user-verification", icon: UserCheck, hasArrow: false },
+      { titleKey: "sidebar.hostApplication", url: "/host-application", icon: FileText, hasArrow: false },
+      { titleKey: "sidebar.coinTrader", url: "/coin-trader", icon: Coins, hasArrow: false },
     ],
   },
   {
-    label: "BANNER",
+    labelKey: "sidebar.banner",
     items: [
-      { title: "Splash", url: "/splash", icon: DollarSign, hasArrow: false },
-      { title: "Home", url: "/home", icon: Home, hasArrow: false },
-      { title: "Gift", url: "/gift", icon: Gift, hasArrow: false },
-      { title: "Game", url: "/game", icon: Gamepad2, hasArrow: false },
+      { titleKey: "sidebar.splash", url: "/splash", icon: DollarSign, hasArrow: false },
+      { titleKey: "sidebar.home", url: "/home", icon: Home, hasArrow: false },
+      { titleKey: "sidebar.gift", url: "/gift", icon: Gift, hasArrow: false },
+      { titleKey: "sidebar.game", url: "/game", icon: Gamepad2, hasArrow: false },
     ],
   },
   {
-    label: "CONTENT",
+    labelKey: "sidebar.content",
     items: [
-      { title: "Hashtag", url: "/hashtag", icon: Hash, hasArrow: false },
+      { titleKey: "sidebar.hashtag", url: "/hashtag", icon: Hash, hasArrow: false },
     ],
   },
   {
-    label: "ENGAGEMENT",
+    labelKey: "sidebar.engagement",
     items: [
-      { title: "Gifts", url: "/gifts", icon: Gift, hasDropdown: true, subItems: ["Gift Category", "Gift"] },
-      { title: "Store", url: "/store", icon: Store, hasDropdown: true, subItems: ["Ride", "Theme", "Frame"] },
-      { title: "Reaction", url: "/reaction", icon: Smile, hasArrow: false },
-      { title: "Beauty Effect", url: "/beauty-effect", icon: Sparkles, hasArrow: false },
+      { titleKey: "sidebar.gifts", url: "/gifts", icon: Gift, hasDropdown: true, subItems: [{ key: "sidebar.giftCategory", url: "/store/giftcategorys" }, { key: "sidebar.gift", url: "/store/gifts" }] },
+      { titleKey: "sidebar.store", url: "/store", icon: Store, hasDropdown: true, subItems: [{ key: "sidebar.ride", url: "/store/rides" }, { key: "sidebar.theme", url: "/store/themes" }, { key: "sidebar.frame", url: "/store/frames" }] },
+      { titleKey: "sidebar.reaction", url: "/reaction", icon: Smile, hasArrow: false },
+      { titleKey: "sidebar.beautyEffect", url: "/beauty-effect", icon: Sparkles, hasArrow: false },
     ],
   },
   {
-    label: "GAME",
+    labelKey: "sidebar.gameSection",
     items: [
-      { title: "Game List", url: "/game-list", icon: Gamepad2, hasArrow: false },
-      { title: "Game History", url: "/game-history", icon: History, hasArrow: false },
+      { titleKey: "sidebar.gameList", url: "/game-list", icon: Gamepad2, hasArrow: false },
+      { titleKey: "sidebar.gameHistory", url: "/game-history", icon: History, hasArrow: false },
     ],
   },
   {
-    label: "PACKAGE",
+    labelKey: "sidebar.package",
     items: [
-      { title: "Coin Plan", url: "/coin-plan", icon: Coins, hasArrow: false },
-      { title: "Order History", url: "/order-history", icon: Package, hasArrow: false },
+      { titleKey: "sidebar.coinPlan", url: "/coin-plan", icon: Coins, hasArrow: false },
+      { titleKey: "sidebar.orderHistory", url: "/order-history", icon: Package, hasArrow: false },
     ],
   },
   {
-    label: "WEALTH LEVEL",
+    labelKey: "sidebar.wealthLevel",
     items: [
-      { title: "Wealth Level", url: "/wealth-level", icon: CreditCard, hasArrow: false },
+      { titleKey: "sidebar.wealthLevelItem", url: "/wealth-level", icon: CreditCard, hasArrow: false },
     ],
   },
   {
-    label: "SUPPORT & REPORTING",
+    labelKey: "sidebar.support",
     items: [
-      { title: "Help", url: "/help", icon: HelpCircle, hasArrow: false },
-      { title: "Report", url: "/report", icon: FileText, hasArrow: false },
+      { titleKey: "sidebar.help", url: "/help", icon: HelpCircle, hasArrow: false },
+      { titleKey: "sidebar.report", url: "/report", icon: FileText, hasArrow: false },
     ],
   },
   {
-    label: "REFERRAL SYSTEM",
+    labelKey: "sidebar.referralSystem",
     items: [
-      { title: "Referral System", url: "/referral-system", icon: Users, hasArrow: false },
+      { titleKey: "sidebar.referralSystemItem", url: "/referral-system", icon: Users, hasArrow: false },
     ],
   },
   {
-    label: "FINANCIAL",
+    labelKey: "sidebar.financial",
     items: [
-      { title: "Payout Method", url: "/payout-method", icon: CreditCard, hasArrow: false },
-      { title: "Payout Request", url: "/payout-request", icon: DollarSign, hasArrow: false },
+      { titleKey: "sidebar.payoutMethod", url: "/payout-method", icon: CreditCard, hasArrow: false },
+      { titleKey: "sidebar.payoutRequest", url: "/payout-request", icon: DollarSign, hasArrow: false },
     ],
   },
   {
-    label: "SYSTEM",
+    labelKey: "sidebar.system",
     items: [
-      { title: "Setting", url: "/settings", icon: Settings, hasArrow: false },
-      { title: "Profile", url: "/profile", icon: UserCircle, hasArrow: false },
+      { titleKey: "sidebar.setting", url: "/settings", icon: Settings, hasArrow: false },
+      { titleKey: "sidebar.profile", url: "/profile", icon: UserCircle, hasArrow: false },
     ],
   },
 ];
 
 export function AppSidebar({ onLogoutClick }: { onLogoutClick?: () => void } = {}) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const { t } = useLanguage();
 
-  const toggleExpanded = (title: string) => {
+  const toggleExpanded = (titleKey: string) => {
     setExpandedItems(prev => 
-      prev.includes(title) 
-        ? prev.filter(item => item !== title)
-        : [...prev, title]
+      prev.includes(titleKey) 
+        ? prev.filter(item => item !== titleKey)
+        : [...prev, titleKey]
     );
   };
 
@@ -148,46 +150,46 @@ export function AppSidebar({ onLogoutClick }: { onLogoutClick?: () => void } = {
           />
           <div>
             <h2 className="font-bold text-white text-xl leading-tight">ALKASSER</h2>
-            <p className="text-xs text-gray-400">Admin Panel</p>
+            <p className="text-xs text-gray-400">{t("sidebar.adminPanel")}</p>
           </div>
         </div>
       </SidebarHeader>
 
       <SidebarContent className="px-2 py-4">
         {menuSections.map((section) => (
-          <SidebarGroup key={section.label}>
+          <SidebarGroup key={section.labelKey}>
             <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-gray-500 px-4 py-2 font-semibold">
-              {section.label}
+              {t(section.labelKey)}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {section.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem key={item.titleKey}>
                     {item.hasDropdown ? (
                       <div>
                         <SidebarMenuButton
-                          onClick={() => toggleExpanded(item.title)}
+                          onClick={() => toggleExpanded(item.titleKey)}
                           className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-primary/20 hover:text-white transition-colors w-full text-left"
                         >
                           <item.icon className="h-5 w-5" />
-                          <span className="flex-1">{item.title}</span>
+                          <span className="flex-1">{t(item.titleKey)}</span>
                           <ChevronDown 
                             className={`h-4 w-4 transition-transform ${
-                              expandedItems.includes(item.title) ? 'rotate-180' : ''
+                              expandedItems.includes(item.titleKey) ? 'rotate-180' : ''
                             }`} 
                           />
                         </SidebarMenuButton>
-                        {expandedItems.includes(item.title) && item.subItems && (
+                        {expandedItems.includes(item.titleKey) && item.subItems && (
                           <div className="ml-8 mt-1 space-y-1">
                             {item.subItems.map((subItem) => (
-                              <SidebarMenuButton key={subItem}>
+                              <SidebarMenuButton key={subItem.key}>
                                 <NavLink
-                                  to={subItem === "Gift Category" ? "/store/giftcategorys" : `/store/${subItem.toLowerCase().replace(/\s+/g, '')}s`}
+                                  to={subItem.url}
                                   className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-primary/10 transition-colors w-full text-left text-sm"
                                   activeClassName="bg-primary/20 text-primary font-medium"
                                 >
                                   <span className="w-2 h-2 rounded-full border border-gray-500"></span>
-                                  <span>{subItem}</span>
+                                  <span>{t(subItem.key)}</span>
                                 </NavLink>
                               </SidebarMenuButton>
                             ))}
@@ -203,7 +205,7 @@ export function AppSidebar({ onLogoutClick }: { onLogoutClick?: () => void } = {
                           activeClassName="bg-primary text-white font-medium"
                         >
                           <item.icon className="h-5 w-5" />
-                          <span className="flex-1">{item.title}</span>
+                          <span className="flex-1">{t(item.titleKey)}</span>
                           {item.hasArrow && <ChevronRight className="h-4 w-4 text-gray-500" />}
                         </NavLink>
                       </SidebarMenuButton>
@@ -224,7 +226,7 @@ export function AppSidebar({ onLogoutClick }: { onLogoutClick?: () => void } = {
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-red-600/20 hover:text-red-400 transition-colors"
             >
               <LogOut className="h-4 w-4" />
-              <span>Logout</span>
+              <span>{t("sidebar.logout")}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

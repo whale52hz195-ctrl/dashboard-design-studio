@@ -87,7 +87,7 @@
     --muted: 260 15% 20%;
     --muted-foreground: 260 10% 60%;
 
-    --accent: 270 50% 45%;
+    --accent: 177 50% 35%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
@@ -130,6 +130,79 @@
     @apply bg-background text-foreground;
     font-family: 'Cairo', 'Inter', 'Segoe UI', system-ui, sans-serif;
   }
+}
+
+/* Global purple-to-primary color overrides */
+@layer utilities {
+  /* Background colors */
+  .bg-purple-600 { background-color: hsl(177 59% 48%) !important; }
+  .bg-purple-700 { background-color: hsl(177 59% 40%) !important; }
+  .bg-purple-500 { background-color: hsl(177 59% 48%) !important; }
+  .bg-purple-500\/20 { background-color: hsl(177 59% 48% / 0.2) !important; }
+  .bg-purple-600\/20 { background-color: hsl(177 59% 48% / 0.2) !important; }
+  .bg-purple-600\/5 { background-color: hsl(177 59% 48% / 0.05) !important; }
+  .bg-purple-100 { background-color: hsl(177 59% 90%) !important; }
+  
+  /* Text colors */
+  .text-purple-400 { color: hsl(177 59% 58%) !important; }
+  .text-purple-500 { color: hsl(177 59% 48%) !important; }
+  .text-purple-600 { color: hsl(177 59% 48%) !important; }
+  .text-purple-800 { color: hsl(177 59% 25%) !important; }
+  .text-purple-300 { color: hsl(177 59% 65%) !important; }
+  
+  /* Border colors */
+  .border-purple-500 { border-color: hsl(177 59% 48%) !important; }
+  .border-purple-500\/50 { border-color: hsl(177 59% 48% / 0.5) !important; }
+  
+  /* Hover states */
+  .hover\:bg-purple-700:hover { background-color: hsl(177 59% 40%) !important; }
+  .hover\:bg-purple-600:hover { background-color: hsl(177 59% 48%) !important; }
+  .hover\:text-purple-300:hover { color: hsl(177 59% 65%) !important; }
+  .hover\:border-purple-500\/50:hover { border-color: hsl(177 59% 48% / 0.5) !important; }
+  
+  /* Focus ring */
+  .focus\:ring-purple-500:focus { --tw-ring-color: hsl(177 59% 48%) !important; }
+  .focus\:ring-2.focus\:ring-purple-500:focus { --tw-ring-color: hsl(177 59% 48%) !important; }
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  /* Sidebar adjustments */
+  .sidebar {
+    border-right: none;
+    border-left: 1px solid hsl(var(--sidebar-border));
+  }
+}
+
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  text-align: right;
+}
+
+[dir="rtl"] .pl-9 {
+  padding-left: 0.75rem;
+  padding-right: 2.25rem;
+}
+
+[dir="rtl"] .pl-10 {
+  padding-left: 0.75rem;
+  padding-right: 2.5rem;
+}
+
+[dir="rtl"] .ml-8 {
+  margin-left: 0;
+  margin-right: 2rem;
+}
+
+[dir="rtl"] .mr-1 {
+  margin-right: 0;
+  margin-left: 0.25rem;
+}
+
+[dir="rtl"] .ml-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
 }
 
 /* Custom scrollbar */

@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguage } from "@/lib/i18n";
 import LoginImage from "../storage/Login.png";
 const IconLogo = "https://firebasestorage.googleapis.com/v0/b/alkasser-d7701.firebasestorage.app/o/images%2FIconLogo.jpeg?alt=media&token=24ff1d49-2541-48f2-9902-86f5deafe345";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("demo@admin.com");
   const [password, setPassword] = useState("");
 
@@ -38,15 +40,15 @@ const Login = () => {
               alt="Logo" 
               className="w-16 h-16 mx-auto mb-6"
             />
-            <h2 className="text-3xl font-bold text-white mb-2">Login to your account</h2>
+            <h2 className="text-3xl font-bold text-white mb-2">{t("login.title")}</h2>
             <p className="text-gray-400">
-              Welcome back! Please enter your details to sign in again.
+              {t("login.welcome")}
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-300">Email</Label>
+              <Label htmlFor="email" className="text-gray-300">{t("login.email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -57,7 +59,7 @@ const Login = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-300">Password</Label>
+              <Label htmlFor="password" className="text-gray-300">{t("login.password")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -72,19 +74,19 @@ const Login = () => {
               <div className="flex items-center gap-2">
                 <Checkbox id="remember" />
                 <Label htmlFor="remember" className="text-sm font-normal text-gray-300">
-                  Remember me?
+                  {t("login.rememberMe")}
                 </Label>
               </div>
-              <button type="button" className="text-sm text-purple-400 hover:text-purple-300">
-                Forgot Password?
+              <button type="button" className="text-sm text-primary hover:text-primary/80">
+                {t("login.forgotPassword")}
               </button>
             </div>
 
             <Button 
               type="submit" 
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              Log In
+              {t("login.logIn")}
             </Button>
 
             <Button
@@ -92,7 +94,7 @@ const Login = () => {
               className="w-full bg-red-500 hover:bg-red-600 text-white"
               onClick={() => navigate("/dashboard")}
             >
-              Demo Log In
+              {t("login.demoLogIn")}
             </Button>
           </form>
         </div>
