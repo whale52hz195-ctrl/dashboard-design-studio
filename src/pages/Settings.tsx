@@ -12,13 +12,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Info, Plus, Pencil, Trash2, Star, Upload, Play, Pause, X, Save, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getAppSettings, updateAppSettings, createAppSettings, AppSettings } from "@/lib/firestoreService";
+import { useLanguage } from "@/lib/i18n";
 
 // Reusable section wrapper
 const SettingSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className="border border-gray-700/50 rounded-lg p-5 space-y-4">
+  <div className="border border-border rounded-lg p-5 space-y-4">
     <div className="flex items-center gap-2 mb-2">
-      <h3 className="text-white font-semibold text-sm">{title}</h3>
-      <Info className="h-4 w-4 text-gray-500" />
+      <h3 className="text-foreground font-semibold text-sm">{title}</h3>
+      <Info className="h-4 w-4 text-muted-foreground" />
     </div>
     {children}
   </div>
@@ -26,15 +27,16 @@ const SettingSection = ({ title, children }: { title: string; children: React.Re
 
 const SettingField = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="space-y-1.5">
-    <Label className="text-gray-400 text-xs">{label}</Label>
+    <Label className="text-muted-foreground text-xs">{label}</Label>
     {children}
   </div>
 );
 
-const inputClass = "bg-[#1a1a2e] border-gray-700 text-white placeholder:text-gray-500 h-9 text-sm";
+const inputClass = "bg-secondary border-border text-foreground placeholder:text-muted-foreground h-9 text-sm";
 
 export default function Settings() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
@@ -54,8 +56,7 @@ export default function Settings() {
         if (data) {
           setSettings(data);
         } else {
-          // Create default settings if none exist
-          const defaultSettings = await getAppSettings(); // This returns mock defaults
+          const defaultSettings = await getAppSettings();
           if (defaultSettings) {
             await createAppSettings(defaultSettings);
             setSettings(defaultSettings);
@@ -63,50 +64,34 @@ export default function Settings() {
         }
       } catch (error) {
         console.error('Error loading settings:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load settings",
-          variant: "destructive"
-        });
+        toast({ title: "Error", description: "Failed to load settings", variant: "destructive" });
       } finally {
         setLoading(false);
       }
     };
-
     loadSettings();
   }, [toast]);
 
   const handleSave = async () => {
     if (!settings) return;
-
     try {
       const success = await updateAppSettings(settings);
       if (success) {
         toast({ title: "Settings Saved", description: "Your changes have been saved successfully." });
       } else {
-        toast({
-          title: "Error",
-          description: "Failed to save settings",
-          variant: "destructive"
-        });
+        toast({ title: "Error", description: "Failed to save settings", variant: "destructive" });
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save settings",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Failed to save settings", variant: "destructive" });
     }
   };
 
   const handleSaveReason = () => {
     if (!settings) return;
-    
     const updatedReasons = editingReason.id
       ? settings.reportReasons.map(r => r.id === editingReason.id ? { ...r, title: editingReason.title, updatedAt: new Date().toISOString().split("T")[0] } : r)
       : [...settings.reportReasons, { id: Date.now().toString(), title: editingReason.title, createdAt: new Date().toISOString().split("T")[0], updatedAt: new Date().toISOString().split("T")[0] }];
-    
     setSettings({ ...settings, reportReasons: updatedReasons });
     setReasonDialog(false);
     setEditingReason({ title: "" });
@@ -114,11 +99,9 @@ export default function Settings() {
 
   const handleSaveCurrency = () => {
     if (!settings) return;
-    
     const updatedCurrencies = editingCurrency.id
       ? settings.currencies.map(c => c.id === editingCurrency.id ? { ...c, ...editingCurrency } : c)
       : [...settings.currencies, { ...editingCurrency, id: Date.now().toString(), isDefault: false }];
-    
     setSettings({ ...settings, currencies: updatedCurrencies });
     setCurrencyDialog(false);
     setEditingCurrency({ name: "", symbol: "", countryCode: "", currencyCode: "" });
@@ -136,18 +119,15 @@ export default function Settings() {
 
   const handleSetDefaultCurrency = (id: string) => {
     if (!settings) return;
-    setSettings({ 
-      ...settings, 
-      currencies: settings.currencies.map(c => ({ ...c, isDefault: c.id === id }))
-    });
+    setSettings({ ...settings, currencies: settings.currencies.map(c => ({ ...c, isDefault: c.id === id })) });
   };
 
   if (loading) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
-          <RefreshCw className="h-8 w-8 text-purple-500 animate-spin" />
-          <span className="ml-2 text-gray-400">Loading settings...</span>
+          <RefreshCw className="h-8 w-8 text-primary animate-spin" />
+          <span className="ml-2 text-muted-foreground">{t("settings.loading")}</span>
         </div>
       </DashboardLayout>
     );
@@ -156,7 +136,7 @@ export default function Settings() {
   if (!settings) {
     return (
       <DashboardLayout>
-        <div className="text-center text-gray-400">
+        <div className="text-center text-muted-foreground">
           <p>Failed to load settings</p>
         </div>
       </DashboardLayout>
@@ -167,23 +147,34 @@ export default function Settings() {
     <DashboardLayout>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">Settings</h1>
-          <Button onClick={handleSave} className="bg-purple-600 hover:bg-purple-700 text-white gap-2">
+          <h1 className="text-2xl font-bold text-foreground">{t("settings.title")}</h1>
+          <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
             <Save className="h-4 w-4" />
-            Save Changes
+            {t("settings.saveChanges")}
           </Button>
         </div>
 
         <Tabs defaultValue="general" className="w-full">
           <div className="overflow-x-auto">
-            <TabsList className="bg-[#1a1a2e] border border-gray-700/50 h-auto p-1 flex w-max gap-1">
-              {["general", "payment", "content-moderation", "report-reasons", "currency", "withdrawal", "profile-management", "audio-management", "video-management", "game"].map(tab => (
+            <TabsList className="bg-secondary border border-border h-auto p-1 flex w-max gap-1">
+              {[
+                { value: "general", label: t("settings.general") },
+                { value: "payment", label: t("settings.payment") },
+                { value: "content-moderation", label: t("settings.contentModeration") },
+                { value: "report-reasons", label: t("settings.reportReasons") },
+                { value: "currency", label: t("settings.currency") },
+                { value: "withdrawal", label: t("settings.withdrawal") },
+                { value: "profile-management", label: t("settings.profileManagement") },
+                { value: "audio-management", label: t("settings.audioManagement") },
+                { value: "video-management", label: t("settings.videoManagement") },
+                { value: "game", label: t("settings.gameSetting") },
+              ].map(tab => (
                 <TabsTrigger
-                  key={tab}
-                  value={tab}
-                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-gray-400 text-xs px-3 py-2 whitespace-nowrap rounded-md"
+                  key={tab.value}
+                  value={tab.value}
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground text-xs px-3 py-2 whitespace-nowrap rounded-md"
                 >
-                  {tab.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                  {tab.label}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -244,7 +235,7 @@ export default function Settings() {
             <SettingSection title="Fake Data Setting">
               <div className="flex items-center gap-3">
                 <Switch checked={settings.general.fakeDataEnabled} onCheckedChange={v => setSettings({ ...settings, general: { ...settings.general, fakeDataEnabled: v } })} />
-                <span className="text-gray-300 text-sm">Enable Fake Data</span>
+                <span className="text-muted-foreground text-sm">Enable Fake Data</span>
               </div>
             </SettingSection>
 
@@ -262,7 +253,7 @@ export default function Settings() {
             <SettingSection title="Shorts Effect Setting">
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.general.shortsEffectEnabled} onCheckedChange={v => setSettings({ ...settings, general: { ...settings.general, shortsEffectEnabled: v } })} />
-                <span className="text-gray-300 text-sm">Enable Shorts Effect</span>
+                <span className="text-muted-foreground text-sm">Enable Shorts Effect</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <SettingField label="License Key">
@@ -277,11 +268,11 @@ export default function Settings() {
             <SettingSection title="Watermark Setting">
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.general.watermarkEnabled} onCheckedChange={v => setSettings({ ...settings, general: { ...settings.general, watermarkEnabled: v } })} />
-                <span className="text-gray-300 text-sm">Enable Watermark</span>
+                <span className="text-muted-foreground text-sm">Enable Watermark</span>
               </div>
-              <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-purple-500/50 transition-colors">
-                <Upload className="h-8 w-8 text-gray-500" />
-                <p className="text-gray-500 text-sm">Click to upload watermark image</p>
+              <div className="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary/50 transition-colors">
+                <Upload className="h-8 w-8 text-muted-foreground" />
+                <p className="text-muted-foreground text-sm">Click to upload watermark image</p>
               </div>
             </SettingSection>
 
@@ -308,7 +299,7 @@ export default function Settings() {
             <SettingSection title="Stripe Setting">
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.payment.stripeEnabled} onCheckedChange={v => setSettings({ ...settings, payment: { ...settings.payment, stripeEnabled: v } })} />
-                <span className="text-gray-300 text-sm">Enable Stripe</span>
+                <span className="text-muted-foreground text-sm">Enable Stripe</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <SettingField label="Publishable Key">
@@ -323,7 +314,7 @@ export default function Settings() {
             <SettingSection title="Razorpay Setting">
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.payment.razorpayEnabled} onCheckedChange={v => setSettings({ ...settings, payment: { ...settings.payment, razorpayEnabled: v } })} />
-                <span className="text-gray-300 text-sm">Enable Razorpay</span>
+                <span className="text-muted-foreground text-sm">Enable Razorpay</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <SettingField label="Razorpay ID">
@@ -338,7 +329,7 @@ export default function Settings() {
             <SettingSection title="Flutterwave Setting">
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.payment.flutterwaveEnabled} onCheckedChange={v => setSettings({ ...settings, payment: { ...settings.payment, flutterwaveEnabled: v } })} />
-                <span className="text-gray-300 text-sm">Enable Flutterwave</span>
+                <span className="text-muted-foreground text-sm">Enable Flutterwave</span>
               </div>
               <SettingField label="Flutterwave ID">
                 <Input className={inputClass} value={settings.payment.flutterwaveId} onChange={e => setSettings({ ...settings, payment: { ...settings.payment, flutterwaveId: e.target.value } })} placeholder="Enter Flutterwave ID" />
@@ -348,7 +339,7 @@ export default function Settings() {
             <SettingSection title="Google Play Setting">
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.payment.googlePlayEnabled} onCheckedChange={v => setSettings({ ...settings, payment: { ...settings.payment, googlePlayEnabled: v } })} />
-                <span className="text-gray-300 text-sm">Enable Google Play</span>
+                <span className="text-muted-foreground text-sm">Enable Google Play</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <SettingField label="Service Account Email">
@@ -407,14 +398,14 @@ export default function Settings() {
           {/* Report Reasons */}
           <TabsContent value="report-reasons" className="space-y-4 mt-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-white font-semibold">Report Reasons</h3>
+              <h3 className="text-foreground font-semibold">{t("settings.reportReasons")}</h3>
               <Dialog open={reasonDialog} onOpenChange={setReasonDialog}>
                 <DialogTrigger asChild>
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-1 text-xs" onClick={() => setEditingReason({ title: "" })}>
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 text-xs" onClick={() => setEditingReason({ title: "" })}>
                     <Plus className="h-4 w-4" /> Add New Reason
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#1a1a2e] border-gray-700 text-white">
+                <DialogContent className="bg-card border-border text-foreground">
                   <DialogHeader>
                     <DialogTitle>{editingReason.id ? "Edit" : "Add"} Report Reason</DialogTitle>
                   </DialogHeader>
@@ -422,30 +413,30 @@ export default function Settings() {
                     <Input className={inputClass} value={editingReason.title} onChange={e => setEditingReason(p => ({ ...p, title: e.target.value }))} placeholder="Enter reason title" />
                   </SettingField>
                   <DialogFooter>
-                    <Button onClick={handleSaveReason} className="bg-purple-600 hover:bg-purple-700">Save</Button>
+                    <Button onClick={handleSaveReason} className="bg-primary hover:bg-primary/90 text-primary-foreground">{t("common.save")}</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="border border-gray-700/50 rounded-lg overflow-hidden">
+            <div className="border border-border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700 hover:bg-transparent">
-                    <TableHead className="text-gray-400">Title</TableHead>
-                    <TableHead className="text-gray-400">Created At</TableHead>
-                    <TableHead className="text-gray-400">Updated At</TableHead>
-                    <TableHead className="text-gray-400 text-right">Actions</TableHead>
+                  <TableRow className="border-border hover:bg-transparent">
+                    <TableHead className="text-muted-foreground">Title</TableHead>
+                    <TableHead className="text-muted-foreground">Created At</TableHead>
+                    <TableHead className="text-muted-foreground">Updated At</TableHead>
+                    <TableHead className="text-muted-foreground text-right">{t("common.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {settings.reportReasons.map(reason => (
-                    <TableRow key={reason.id} className="border-gray-700/50 hover:bg-purple-600/5">
-                      <TableCell className="text-white">{reason.title}</TableCell>
-                      <TableCell className="text-gray-400">{reason.createdAt}</TableCell>
-                      <TableCell className="text-gray-400">{reason.updatedAt}</TableCell>
+                    <TableRow key={reason.id} className="border-border hover:bg-primary/5">
+                      <TableCell className="text-foreground">{reason.title}</TableCell>
+                      <TableCell className="text-muted-foreground">{reason.createdAt}</TableCell>
+                      <TableCell className="text-muted-foreground">{reason.updatedAt}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-400 hover:text-white" onClick={() => { setEditingReason({ id: reason.id, title: reason.title }); setReasonDialog(true); }}>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => { setEditingReason({ id: reason.id, title: reason.title }); setReasonDialog(true); }}>
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-red-400 hover:text-red-300" onClick={() => handleDeleteReason(reason.id)}>
@@ -463,14 +454,14 @@ export default function Settings() {
           {/* Currency */}
           <TabsContent value="currency" className="space-y-4 mt-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-white font-semibold">Currency Settings</h3>
+              <h3 className="text-foreground font-semibold">{t("settings.currency")}</h3>
               <Dialog open={currencyDialog} onOpenChange={setCurrencyDialog}>
                 <DialogTrigger asChild>
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-1 text-xs" onClick={() => setEditingCurrency({ name: "", symbol: "", countryCode: "", currencyCode: "" })}>
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 text-xs" onClick={() => setEditingCurrency({ name: "", symbol: "", countryCode: "", currencyCode: "" })}>
                     <Plus className="h-4 w-4" /> Add Currency
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#1a1a2e] border-gray-700 text-white">
+                <DialogContent className="bg-card border-border text-foreground">
                   <DialogHeader>
                     <DialogTitle>{editingCurrency.id ? "Edit" : "Add"} Currency</DialogTitle>
                   </DialogHeader>
@@ -489,36 +480,36 @@ export default function Settings() {
                     </SettingField>
                   </div>
                   <DialogFooter>
-                    <Button onClick={handleSaveCurrency} className="bg-purple-600 hover:bg-purple-700">Save</Button>
+                    <Button onClick={handleSaveCurrency} className="bg-primary hover:bg-primary/90 text-primary-foreground">{t("common.save")}</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="border border-gray-700/50 rounded-lg overflow-hidden">
+            <div className="border border-border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700 hover:bg-transparent">
-                    <TableHead className="text-gray-400">Name</TableHead>
-                    <TableHead className="text-gray-400">Symbol</TableHead>
-                    <TableHead className="text-gray-400">Country Code</TableHead>
-                    <TableHead className="text-gray-400">Currency Code</TableHead>
-                    <TableHead className="text-gray-400">Default</TableHead>
-                    <TableHead className="text-gray-400 text-right">Actions</TableHead>
+                  <TableRow className="border-border hover:bg-transparent">
+                    <TableHead className="text-muted-foreground">Name</TableHead>
+                    <TableHead className="text-muted-foreground">Symbol</TableHead>
+                    <TableHead className="text-muted-foreground">Country Code</TableHead>
+                    <TableHead className="text-muted-foreground">Currency Code</TableHead>
+                    <TableHead className="text-muted-foreground">Default</TableHead>
+                    <TableHead className="text-muted-foreground text-right">{t("common.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {settings.currencies.map(currency => (
-                    <TableRow key={currency.id} className="border-gray-700/50 hover:bg-purple-600/5">
-                      <TableCell className="text-white">{currency.name}</TableCell>
-                      <TableCell className="text-white">{currency.symbol}</TableCell>
-                      <TableCell className="text-gray-400">{currency.countryCode}</TableCell>
-                      <TableCell className="text-gray-400">{currency.currencyCode}</TableCell>
+                    <TableRow key={currency.id} className="border-border hover:bg-primary/5">
+                      <TableCell className="text-foreground">{currency.name}</TableCell>
+                      <TableCell className="text-foreground">{currency.symbol}</TableCell>
+                      <TableCell className="text-muted-foreground">{currency.countryCode}</TableCell>
+                      <TableCell className="text-muted-foreground">{currency.currencyCode}</TableCell>
                       <TableCell>
-                        <Star className={`h-4 w-4 cursor-pointer ${currency.isDefault ? "text-yellow-400 fill-yellow-400" : "text-gray-500"}`} onClick={() => handleSetDefaultCurrency(currency.id)} />
+                        <Star className={`h-4 w-4 cursor-pointer ${currency.isDefault ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground"}`} onClick={() => handleSetDefaultCurrency(currency.id)} />
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-400 hover:text-white" onClick={() => { setEditingCurrency(currency); setCurrencyDialog(true); }}>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => { setEditingCurrency(currency); setCurrencyDialog(true); }}>
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-red-400 hover:text-red-300" onClick={() => handleDeleteCurrency(currency.id)}>
@@ -568,19 +559,19 @@ export default function Settings() {
               <div className="flex flex-wrap gap-6">
                 {settings.profileImages.map((img, i) => (
                   <div key={i} className="flex flex-col items-center gap-2">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-purple-500/50">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/50">
                       <img src={img} alt={`Profile ${i + 1}`} className="w-full h-full object-cover" />
                     </div>
                     <Button size="sm" variant="ghost" className="text-red-400 hover:text-red-300 text-xs h-7" onClick={() => setSettings({ ...settings, profileImages: settings.profileImages.filter((_, idx) => idx !== i) })}>
-                      <X className="h-3 w-3 mr-1" /> Remove
+                      <X className="h-3 w-3 mr-1" /> {t("common.remove")}
                     </Button>
                   </div>
                 ))}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-600 flex items-center justify-center cursor-pointer hover:border-purple-500/50 transition-colors">
-                    <Plus className="h-8 w-8 text-gray-500" />
+                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors">
+                    <Plus className="h-8 w-8 text-muted-foreground" />
                   </div>
-                  <span className="text-gray-500 text-xs">Upload</span>
+                  <span className="text-muted-foreground text-xs">{t("common.upload")}</span>
                 </div>
               </div>
             </SettingSection>
@@ -592,21 +583,21 @@ export default function Settings() {
               <div className="flex flex-wrap gap-6">
                 {settings.audioFiles.map(audio => (
                   <div key={audio.id} className="flex flex-col items-center gap-2">
-                    <div className="w-24 h-24 rounded-full bg-purple-600/20 border-2 border-purple-500/50 flex items-center justify-center cursor-pointer" onClick={() => setPlayingAudio(playingAudio === audio.id ? null : audio.id)}>
-                      {playingAudio === audio.id ? <Pause className="h-8 w-8 text-purple-400" /> : <Play className="h-8 w-8 text-purple-400" />}
+                    <div className="w-24 h-24 rounded-full bg-primary/20 border-2 border-primary/50 flex items-center justify-center cursor-pointer" onClick={() => setPlayingAudio(playingAudio === audio.id ? null : audio.id)}>
+                      {playingAudio === audio.id ? <Pause className="h-8 w-8 text-primary" /> : <Play className="h-8 w-8 text-primary" />}
                     </div>
-                    <span className="text-white text-xs font-medium">{audio.name}</span>
-                    <span className="text-gray-500 text-xs">{audio.duration}</span>
+                    <span className="text-foreground text-xs font-medium">{audio.name}</span>
+                    <span className="text-muted-foreground text-xs">{audio.duration}</span>
                     <Button size="sm" variant="ghost" className="text-red-400 hover:text-red-300 text-xs h-7" onClick={() => setSettings({ ...settings, audioFiles: settings.audioFiles.filter(a => a.id !== audio.id) })}>
-                      <X className="h-3 w-3 mr-1" /> Remove
+                      <X className="h-3 w-3 mr-1" /> {t("common.remove")}
                     </Button>
                   </div>
                 ))}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-600 flex items-center justify-center cursor-pointer hover:border-purple-500/50 transition-colors">
-                    <Upload className="h-8 w-8 text-gray-500" />
+                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors">
+                    <Upload className="h-8 w-8 text-muted-foreground" />
                   </div>
-                  <span className="text-gray-500 text-xs">Upload Audio</span>
+                  <span className="text-muted-foreground text-xs">Upload Audio</span>
                 </div>
               </div>
             </SettingSection>
@@ -618,24 +609,24 @@ export default function Settings() {
               <div className="flex flex-wrap gap-6">
                 {settings.videoFiles.map(video => (
                   <div key={video.id} className="flex flex-col items-center gap-2">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-purple-500/50 relative">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/50 relative">
                       <img src={video.thumbnail} alt={video.name} className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                         <Play className="h-6 w-6 text-white" />
                       </div>
                     </div>
-                    <span className="text-white text-xs font-medium">{video.name}</span>
-                    <span className="text-gray-500 text-xs">{video.duration}</span>
+                    <span className="text-foreground text-xs font-medium">{video.name}</span>
+                    <span className="text-muted-foreground text-xs">{video.duration}</span>
                     <Button size="sm" variant="ghost" className="text-red-400 hover:text-red-300 text-xs h-7" onClick={() => setSettings({ ...settings, videoFiles: settings.videoFiles.filter(v => v.id !== video.id) })}>
-                      <X className="h-3 w-3 mr-1" /> Remove
+                      <X className="h-3 w-3 mr-1" /> {t("common.remove")}
                     </Button>
                   </div>
                 ))}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-600 flex items-center justify-center cursor-pointer hover:border-purple-500/50 transition-colors">
-                    <Upload className="h-8 w-8 text-gray-500" />
+                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors">
+                    <Upload className="h-8 w-8 text-muted-foreground" />
                   </div>
-                  <span className="text-gray-500 text-xs">Upload Video</span>
+                  <span className="text-muted-foreground text-xs">Upload Video</span>
                 </div>
               </div>
             </SettingSection>
