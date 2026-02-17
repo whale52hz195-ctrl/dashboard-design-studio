@@ -3,30 +3,92 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatCard } from "@/components/shared/StatCard";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { dashboardStats, activityData, topContributors } from "@/data/mockData";
+import { getDashboardStats, getActivityData, getTopContributors } from "@/lib/firestoreService";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
+  const [dashboardStats, setDashboardStats] = useState({
+    totalUsers: 0,
+    vipUsers: 0,
+    totalHosts: 0,
+    totalAgencies: 0,
+    totalCoins: 0,
+    activeUsers: 0,
+    newUsersToday: 0,
+    revenue: 0,
+  });
+  const [activityData, setActivityData] = useState([]);
+  const [topContributors, setTopContributors] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch all dashboard data in parallel
+        const [stats, activity, contributors] = await Promise.all([
+          getDashboardStats(),
+          getActivityData(),
+          getTopContributors()
+        ]);
+
+        setDashboardStats(stats);
+        setActivityData(activity);
+        setTopContributors(contributors);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <p className="text-muted-foreground text-sm">Loading real-time data...</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                  <div className="h-8 bg-muted rounded w-1/2"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground text-sm">Overview of your platform</p>
+          <p className="text-muted-foreground text-sm">Real-time overview of your platform</p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Total Users" value={dashboardStats.totalUsers} icon={Users} trend="+12.5%" trendUp />
-          <StatCard title="VIP Users" value={dashboardStats.vipUsers} icon={Crown} iconColor="text-warning" trend="+8.2%" trendUp />
-          <StatCard title="Total Hosts" value={dashboardStats.totalHosts} icon={Mic} iconColor="text-chart-2" trend="+5.1%" trendUp />
-          <StatCard title="Agencies" value={dashboardStats.totalAgencies} icon={Building2} iconColor="text-chart-3" />
+          <StatCard title="Total Users" value={dashboardStats.totalUsers.toLocaleString()} icon={Users} trend="+12.5%" trendUp />
+          <StatCard title="VIP Users" value={dashboardStats.vipUsers.toLocaleString()} icon={Crown} iconColor="text-warning" trend="+8.2%" trendUp />
+          <StatCard title="Total Hosts" value={dashboardStats.totalHosts.toLocaleString()} icon={Mic} iconColor="text-chart-2" trend="+5.1%" trendUp />
+          <StatCard title="Agencies" value={dashboardStats.totalAgencies.toLocaleString()} icon={Building2} iconColor="text-chart-3" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Total Coins" value={dashboardStats.totalCoins} icon={Coins} iconColor="text-chart-4" />
-          <StatCard title="Active Users" value={dashboardStats.activeUsers} icon={TrendingUp} trend="+3.8%" trendUp />
-          <StatCard title="New Today" value={dashboardStats.newUsersToday} icon={UserPlus} iconColor="text-chart-5" />
+          <StatCard title="Total Coins" value={dashboardStats.totalCoins.toLocaleString()} icon={Coins} iconColor="text-chart-4" />
+          <StatCard title="Active Users" value={dashboardStats.activeUsers.toLocaleString()} icon={TrendingUp} trend="+3.8%" trendUp />
+          <StatCard title="New Today" value={dashboardStats.newUsersToday.toLocaleString()} icon={UserPlus} iconColor="text-chart-5" />
           <StatCard title="Revenue" value={`$${dashboardStats.revenue.toLocaleString()}`} icon={DollarSign} iconColor="text-success" trend="+15.3%" trendUp />
         </div>
 

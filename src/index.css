@@ -1,3 +1,68 @@
+/* Cairo Font Faces */
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +78,7 @@
     --popover: 260 20% 13%;
     --popover-foreground: 260 10% 95%;
 
-    --primary: 270 60% 55%;
+    --primary: 177 59% 48%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 260 20% 18%;
@@ -30,20 +95,20 @@
 
     --border: 260 15% 22%;
     --input: 260 15% 22%;
-    --ring: 270 60% 55%;
+    --ring: 177 59% 48%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 260 25% 8%;
     --sidebar-foreground: 260 10% 75%;
-    --sidebar-primary: 270 60% 55%;
+    --sidebar-primary: 177 59% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 260 20% 15%;
     --sidebar-accent-foreground: 260 10% 95%;
     --sidebar-border: 260 15% 18%;
-    --sidebar-ring: 270 60% 55%;
+    --sidebar-ring: 177 59% 48%;
 
-    --chart-1: 270 60% 55%;
+    --chart-1: 177 59% 48%;
     --chart-2: 200 70% 50%;
     --chart-3: 150 60% 45%;
     --chart-4: 40 80% 55%;
@@ -63,7 +128,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Cairo', 'Inter', 'Segoe UI', system-ui, sans-serif;
   }
 }
 
@@ -80,4 +145,11 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(260 15% 35%);
+}
+
+/* Cairo font specific styles for better Arabic rendering */
+.cairo-font {
+  font-family: 'Cairo', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
 }

@@ -1,30 +1,26 @@
 import { 
-  ChevronDown, 
-  ChevronRight, 
-  LogOut, 
+  Home, 
   User, 
   UserCheck, 
   FileText, 
-  Mic, 
-  Building2, 
-  Coins,
-  Home,
-  Gift,
-  Gamepad2,
-  Smartphone,
-  Music,
-  Hash,
-  Store,
-  History,
-  Package,
-  CreditCard,
-  HelpCircle,
-  Users,
-  DollarSign,
-  Settings,
-  UserCircle,
-  Smile,
-  Sparkles
+  DollarSign, 
+  Hash, 
+  Gift, 
+  Gamepad2, 
+  Store, 
+  Smile, 
+  Sparkles, 
+  History, 
+  Coins, 
+  Package, 
+  CreditCard, 
+  HelpCircle, 
+  Users, 
+  Settings, 
+  UserCircle, 
+  ChevronDown, 
+  ChevronRight, 
+  LogOut 
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -54,8 +50,6 @@ const menuSections = [
       { title: "User", url: "/user", icon: User, hasArrow: false },
       { title: "User Verification", url: "/user-verification", icon: UserCheck, hasArrow: false },
       { title: "Host Application", url: "/host-application", icon: FileText, hasArrow: false },
-      { title: "Host", url: "/host", icon: Mic, hasArrow: false },
-      { title: "Agency", url: "/agency", icon: Building2, hasArrow: false },
       { title: "Coin Trader", url: "/coin-trader", icon: Coins, hasArrow: false },
     ],
   },
@@ -71,8 +65,6 @@ const menuSections = [
   {
     label: "CONTENT",
     items: [
-      { title: "Social Media", url: "/social-media", icon: Smartphone, hasDropdown: true, subItems: ["Posts", "Videos"] },
-      { title: "Songs", url: "/songs", icon: Music, hasDropdown: true, subItems: ["Song", "Song Category"] },
       { title: "Hashtag", url: "/hashtag", icon: Hash, hasArrow: false },
     ],
   },
@@ -130,13 +122,12 @@ const menuSections = [
     items: [
       { title: "Setting", url: "/settings", icon: Settings, hasArrow: false },
       { title: "Profile", url: "/profile", icon: UserCircle, hasArrow: false },
-      { title: "Logout", url: "/logout", icon: LogOut, hasArrow: false },
     ],
   },
 ];
 
-export function AppSidebar() {
-  const [expandedItems, setExpandedItems] = useState<string[]>(["Store"]);
+export function AppSidebar({ onLogoutClick }: { onLogoutClick?: () => void } = {}) {
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
   const toggleExpanded = (title: string) => {
     setExpandedItems(prev => 
@@ -151,7 +142,7 @@ export function AppSidebar() {
       <SidebarHeader className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <img 
-            src="src/storage/IconLogo.jpeg" 
+            src="https://firebasestorage.googleapis.com/v0/b/alkasser-d7701.firebasestorage.app/o/images%2FIconLogo.jpeg?alt=media&token=24ff1d49-2541-48f2-9902-86f5deafe345" 
             alt="Dashboard Logo" 
             className="h-10 w-10 rounded-lg object-cover"
           />
@@ -176,7 +167,7 @@ export function AppSidebar() {
                       <div>
                         <SidebarMenuButton
                           onClick={() => toggleExpanded(item.title)}
-                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-purple-600/20 hover:text-white transition-colors w-full text-left"
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-primary/20 hover:text-white transition-colors w-full text-left"
                         >
                           <item.icon className="h-5 w-5" />
                           <span className="flex-1">{item.title}</span>
@@ -191,9 +182,9 @@ export function AppSidebar() {
                             {item.subItems.map((subItem) => (
                               <SidebarMenuButton key={subItem}>
                                 <NavLink
-                                  to={`/store/${subItem.toLowerCase()}s`}
-                                  className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-purple-600/10 transition-colors w-full text-left text-sm"
-                                  activeClassName="bg-purple-600/20 text-purple-400 font-medium"
+                                  to={subItem === "Gift Category" ? "/store/giftcategorys" : `/store/${subItem.toLowerCase().replace(/\s+/g, '')}s`}
+                                  className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-primary/10 transition-colors w-full text-left text-sm"
+                                  activeClassName="bg-primary/20 text-primary font-medium"
                                 >
                                   <span className="w-2 h-2 rounded-full border border-gray-500"></span>
                                   <span>{subItem}</span>
@@ -208,8 +199,8 @@ export function AppSidebar() {
                         <NavLink
                           to={item.url}
                           end
-                          className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-300 hover:bg-purple-600/20 hover:text-white"
-                          activeClassName="bg-purple-600 text-white font-medium"
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-300 hover:bg-primary/20 hover:text-white"
+                          activeClassName="bg-primary text-white font-medium"
                         >
                           <item.icon className="h-5 w-5" />
                           <span className="flex-1">{item.title}</span>
@@ -228,15 +219,12 @@ export function AppSidebar() {
       <SidebarFooter className="p-3 border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <NavLink
-                to="/login"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-red-600/20 hover:text-red-400 transition-colors"
-                activeClassName=""
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </NavLink>
+            <SidebarMenuButton 
+              onClick={() => onLogoutClick && onLogoutClick()}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-red-600/20 hover:text-red-400 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
