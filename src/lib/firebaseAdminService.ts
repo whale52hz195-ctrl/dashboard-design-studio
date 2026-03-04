@@ -1,6 +1,7 @@
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import serviceAccountKey from '../../serviceAccountKey.json';
+
+const serviceAccountKey = {};
 
 // Initialize Firebase Admin SDK
 const app = initializeApp({
