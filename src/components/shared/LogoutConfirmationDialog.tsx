@@ -1,5 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/i18n";
 
 interface LogoutConfirmationDialogProps {
   isOpen: boolean;
@@ -8,6 +9,8 @@ interface LogoutConfirmationDialogProps {
 }
 
 const LogoutConfirmationDialog = ({ isOpen, onConfirm, onCancel }: LogoutConfirmationDialogProps) => {
+  const { t } = useLanguage();
+
   if (!isOpen) return null;
 
   return (
@@ -22,8 +25,8 @@ const LogoutConfirmationDialog = ({ isOpen, onConfirm, onCancel }: LogoutConfirm
 
         {/* Logout Text */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Logout</h2>
-          <p className="text-muted-foreground">Are you sure you want to logout?</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">{t("logoutDialog.title")}</h2>
+          <p className="text-muted-foreground">{t("logoutDialog.message")}</p>
         </div>
 
         {/* Action Buttons */}
@@ -32,14 +35,14 @@ const LogoutConfirmationDialog = ({ isOpen, onConfirm, onCancel }: LogoutConfirm
             onClick={onConfirm}
             className="bg-purple-600 text-white hover:bg-purple-700 px-8 py-3"
           >
-            Logout
+            {t("logoutDialog.confirm")}
           </Button>
           <Button
             onClick={onCancel}
             variant="outline"
             className="bg-gray-200 text-gray-800 hover:bg-gray-300 px-8 py-3"
           >
-            Cancel
+            {t("logoutDialog.cancel")}
           </Button>
         </div>
       </div>

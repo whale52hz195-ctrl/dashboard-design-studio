@@ -5,6 +5,7 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy,
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db } from "@/lib/firebase";
 import { storage } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface SplashBanner {
   id: string;
@@ -24,6 +25,7 @@ interface SplashBanner {
 }
 
 const SplashPage = () => {
+  const { t, isRTL } = useLanguage();
   const [banners, setBanners] = useState<SplashBanner[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -311,22 +313,22 @@ const SplashPage = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white">Splash Banner Management</h1>
-            <p className="text-gray-400 mt-1">Manage your splash screens and banners</p>
+            <h1 className="text-3xl font-bold text-white">{t("page.splashBanner")}</h1>
+            <p className="text-gray-400 mt-1">{t("page.manageSplashBanners")}</p>
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Add Banner
+            {t("page.addBanner")}
           </button>
         </div>
 
         {/* Stats */}
         <div className="mb-6">
           <div className="text-gray-300">
-            Total Banners: <span className="text-white font-medium">{banners.length}</span>
+            {t("page.totalBanners")}: <span className="text-white font-medium">{banners.length}</span>
           </div>
         </div>
 
@@ -335,7 +337,7 @@ const SplashPage = () => {
           <div className="flex items-center gap-4">
             {/* Entries per page */}
             <div className="flex items-center gap-2">
-              <label className="text-gray-400 text-sm">Show</label>
+              <label className="text-gray-400 text-sm">{t("splashPage.show")}</label>
               <select
                 value={entriesPerPage}
                 onChange={(e) => {
@@ -349,22 +351,22 @@ const SplashPage = () => {
                 <option value={25}>25</option>
                 <option value={50}>50</option>
               </select>
-              <label className="text-gray-400 text-sm">entries</label>
+              <label className="text-gray-400 text-sm">{t("splashPage.entries")}</label>
             </div>
           </div>
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5`} />
             <input
               type="text"
-              placeholder="Search ⌘K"
+              placeholder={t("common.search")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
+              className={`bg-gray-800 border border-gray-700 rounded-lg ${isRTL ? "pr-10 pl-4" : "pl-10 pr-4"} py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64`}
             />
           </div>
         </div>
@@ -375,40 +377,26 @@ const SplashPage = () => {
             <table className="w-full">
               <thead className="bg-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    BANNER
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    LINK
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    TYPE
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    STATUS
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    DURATION
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    ANALYTICS
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    ACTIONS
-                  </th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("splashPage.banner")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("splashPage.link")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("splashPage.type")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("splashPage.status")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("splashPage.duration")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("splashPage.analytics")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("splashPage.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {loading ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">Loading banners...</div>
+                      <div className="text-gray-400">{t("splashPage.loadingBanners")}</div>
                     </td>
                   </tr>
                 ) : paginatedBanners.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">No banners found</div>
+                      <div className="text-gray-400">{t("splashPage.noBannersFound")}</div>
                     </td>
                   </tr>
                 ) : (
@@ -473,7 +461,7 @@ const SplashPage = () => {
                             <span>{formatDate(banner.startDate)}</span>
                           </div>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-gray-400">to</span>
+                            <span className="text-gray-400">{t("splashPage.to")}</span>
                             <span>{formatDate(banner.endDate)}</span>
                           </div>
                         </div>
@@ -520,7 +508,7 @@ const SplashPage = () => {
           {/* Pagination */}
           <div className="bg-gray-700 px-6 py-4 flex items-center justify-between">
             <div className="text-gray-400 text-sm">
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredBanners.length)} of {filteredBanners.length} entries
+              {t("splashPage.showing", { start: startIndex + 1, end: Math.min(endIndex, filteredBanners.length), total: filteredBanners.length })}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -592,34 +580,34 @@ const SplashPage = () => {
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-              <h2 className="text-xl font-semibold text-white mb-4">Add New Splash Banner</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("splashPage.addNewSplashBanner")}</h2>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Title</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.title")}</label>
                     <input
                       type="text"
                       value={newBanner.title || ''}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Enter banner title"
+                      placeholder={t("splashPage.enterBannerTitle")}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.type")}</label>
                     <select
                       value={newBanner.type || 'splash'}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, type: e.target.value as any }))}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
-                      <option value="splash">Splash</option>
-                      <option value="popup">Popup</option>
-                      <option value="banner">Banner</option>
+                      <option value="splash">{t("splashPage.splash")}</option>
+                      <option value="popup">{t("splashPage.popup")}</option>
+                      <option value="banner">{t("splashPage.bannerOption")}</option>
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.uploadImage")}</label>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <input
@@ -635,14 +623,14 @@ const SplashPage = () => {
                         className="bg-gray-700 hover:bg-gray-600 border border-gray-600 rounded-md px-4 py-2 text-white cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Upload className="h-4 w-4" />
-                        {uploadingImage ? 'Uploading...' : 'Choose Image'}
+                        {uploadingImage ? t("splashPage.uploading") : t("splashPage.chooseImage")}
                       </label>
                     </div>
                     {newBanner.imageUrl && (
                       <div className="mt-3">
                         <img 
                           src={newBanner.imageUrl} 
-                          alt="Preview" 
+                          alt={t("splashPage.preview")} 
                           className="h-32 w-full object-cover rounded-lg border border-gray-600"
                         />
                         <p className="text-xs text-gray-400 mt-2 truncate">{newBanner.imageUrl}</p>
@@ -652,40 +640,40 @@ const SplashPage = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Link To</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.linkTo")}</label>
                     <input
                       type="text"
                       value={newBanner.linkTo || ''}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, linkTo: e.target.value }))}
-                      placeholder="Enter link URL"
+                      placeholder={t("splashPage.enterLinkURL")}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Link Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.linkType")}</label>
                     <select
                       value={newBanner.linkType || 'internal'}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, linkType: e.target.value as any }))}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
-                      <option value="internal">Internal</option>
-                      <option value="external">External</option>
+                      <option value="internal">{t("splashPage.internal")}</option>
+                      <option value="external">{t("splashPage.external")}</option>
                     </select>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Order</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.order")}</label>
                     <input
                       type="number"
                       value={newBanner.order || ''}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, order: parseInt(e.target.value) }))}
-                      placeholder="Order"
+                      placeholder={t("splashPage.orderPlaceholder")}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Start Date</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.startDate")}</label>
                     <input
                       type="datetime-local"
                       value={newBanner.startDate ? new Date(newBanner.startDate.toDate()).toISOString().slice(0, 16) : ''}
@@ -694,7 +682,7 @@ const SplashPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">End Date</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.endDate")}</label>
                     <input
                       type="datetime-local"
                       value={newBanner.endDate ? new Date(newBanner.endDate.toDate()).toISOString().slice(0, 16) : ''}
@@ -708,13 +696,13 @@ const SplashPage = () => {
                     onClick={() => setShowCreateModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("splashPage.cancel")}
                   </button>
                   <button
                     onClick={handleCreateBanner}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Add Banner
+                    {t("splashPage.addBanner")}
                   </button>
                 </div>
               </div>
@@ -726,34 +714,34 @@ const SplashPage = () => {
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-              <h2 className="text-xl font-semibold text-white mb-4">Edit Splash Banner</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("splashPage.editSplashBanner")}</h2>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Title</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.title")}</label>
                     <input
                       type="text"
                       value={newBanner.title || ''}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Enter banner title"
+                      placeholder={t("splashPage.enterBannerTitle")}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.type")}</label>
                     <select
                       value={newBanner.type || 'splash'}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, type: e.target.value as any }))}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
-                      <option value="splash">Splash</option>
-                      <option value="popup">Popup</option>
-                      <option value="banner">Banner</option>
+                      <option value="splash">{t("splashPage.splash")}</option>
+                      <option value="popup">{t("splashPage.popup")}</option>
+                      <option value="banner">{t("splashPage.bannerOption")}</option>
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.uploadImage")}</label>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <input
@@ -769,14 +757,14 @@ const SplashPage = () => {
                         className="bg-gray-700 hover:bg-gray-600 border border-gray-600 rounded-md px-4 py-2 text-white cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Upload className="h-4 w-4" />
-                        {uploadingImage ? 'Uploading...' : 'Choose Image'}
+                        {uploadingImage ? t("splashPage.uploading") : t("splashPage.chooseImage")}
                       </label>
                     </div>
                     {newBanner.imageUrl && (
                       <div className="mt-3">
                         <img 
                           src={newBanner.imageUrl} 
-                          alt="Preview" 
+                          alt={t("splashPage.preview")} 
                           className="h-32 w-full object-cover rounded-lg border border-gray-600"
                         />
                         <p className="text-xs text-gray-400 mt-2 truncate">{newBanner.imageUrl}</p>
@@ -786,40 +774,40 @@ const SplashPage = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Link To</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.linkTo")}</label>
                     <input
                       type="text"
                       value={newBanner.linkTo || ''}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, linkTo: e.target.value }))}
-                      placeholder="Enter link URL"
+                      placeholder={t("splashPage.enterLinkURL")}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Link Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.linkType")}</label>
                     <select
                       value={newBanner.linkType || 'internal'}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, linkType: e.target.value as any }))}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
-                      <option value="internal">Internal</option>
-                      <option value="external">External</option>
+                      <option value="internal">{t("splashPage.internal")}</option>
+                      <option value="external">{t("splashPage.external")}</option>
                     </select>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Order</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.order")}</label>
                     <input
                       type="number"
                       value={newBanner.order || ''}
                       onChange={(e) => setNewBanner(prev => ({ ...prev, order: parseInt(e.target.value) }))}
-                      placeholder="Order"
+                      placeholder={t("splashPage.orderPlaceholder")}
                       className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Start Date</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.startDate")}</label>
                     <input
                       type="datetime-local"
                       value={newBanner.startDate ? new Date(newBanner.startDate.toDate()).toISOString().slice(0, 16) : ''}
@@ -828,7 +816,7 @@ const SplashPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">End Date</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">{t("splashPage.endDate")}</label>
                     <input
                       type="datetime-local"
                       value={newBanner.endDate ? new Date(newBanner.endDate.toDate()).toISOString().slice(0, 16) : ''}
@@ -842,13 +830,13 @@ const SplashPage = () => {
                     onClick={() => setShowEditModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("splashPage.cancel")}
                   </button>
                   <button
                     onClick={handleEditBanner}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Update Banner
+                    {t("splashPage.updateBanner")}
                   </button>
                 </div>
               </div>

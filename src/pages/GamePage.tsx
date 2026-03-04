@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, ChevronLeft, ChevronRight } from "lucide-re
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface GameBanner {
   id: string;
@@ -14,6 +15,7 @@ interface GameBanner {
 }
 
 const GamePage = () => {
+  const { t, isRTL } = useLanguage();
   const [banners, setBanners] = useState<GameBanner[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -187,22 +189,22 @@ const GamePage = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white">Game Announcement Banner</h1>
-            <p className="text-gray-400 mt-1">Manage your game banner</p>
+            <h1 className="text-3xl font-bold text-white">{t("page.gameBanner")}</h1>
+            <p className="text-gray-400 mt-1">{t("gamePage.manageGameBanner")}</p>
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Add Banner
+            {t("gamePage.addBanner")}
           </button>
         </div>
 
         {/* Stats */}
         <div className="mb-6">
           <div className="text-gray-300">
-            Total Banners: <span className="text-white font-medium">{banners.length}</span>
+            {t("gamePage.totalBanners")}: <span className="text-white font-medium">{banners.length}</span>
           </div>
         </div>
 
@@ -211,7 +213,7 @@ const GamePage = () => {
           <div className="flex items-center gap-4">
             {/* Entries per page */}
             <div className="flex items-center gap-2">
-              <label className="text-gray-400 text-sm">Show</label>
+              <label className="text-gray-400 text-sm">{t("gamePage.show")}</label>
               <select
                 value={entriesPerPage}
                 onChange={(e) => {
@@ -225,22 +227,22 @@ const GamePage = () => {
                 <option value={25}>25</option>
                 <option value={50}>50</option>
               </select>
-              <label className="text-gray-400 text-sm">entries</label>
+              <label className="text-gray-400 text-sm">{t("gamePage.entries")}</label>
             </div>
           </div>
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5`} />
             <input
               type="text"
-              placeholder="Search ⌘K"
+              placeholder={t("common.search")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
+              className={`bg-gray-800 border border-gray-700 rounded-lg ${isRTL ? "pr-10 pl-4" : "pl-10 pr-4"} py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64`}
             />
           </div>
         </div>
@@ -251,37 +253,25 @@ const GamePage = () => {
             <table className="w-full">
               <thead className="bg-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    IMAGE
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    REDIRECT URL
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    STATUS
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    CREATED DATE
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    LAST UPDATED
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    ACTIONS
-                  </th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("gamePage.image")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("gamePage.redirectUrl")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("gamePage.status")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("gamePage.createdDate")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("gamePage.lastUpdated")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("gamePage.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {loading ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">Loading banners...</div>
+                      <div className="text-gray-400">{t("gamePage.loadingBanners")}</div>
                     </td>
                   </tr>
                 ) : paginatedBanners.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">No banners found</div>
+                      <div className="text-gray-400">{t("gamePage.noBannersFound")}</div>
                     </td>
                   </tr>
                 ) : (
@@ -291,10 +281,10 @@ const GamePage = () => {
                         <div className="flex items-center">
                           <img 
                             src={banner.image} 
-                            alt="Banner" 
+                            alt={t("gamePage.banner")} 
                             className="h-12 w-20 object-cover rounded-lg shadow-md"
                             onError={(e) => {
-                              e.currentTarget.src = 'https://via.placeholder.com/80x40/cccccc/000000?text=No+Image';
+                              e.currentTarget.src = 'https://picsum.photos/80x40/cccccc/000000?seed=No+Image';
                             e.currentTarget.onerror = null;
                             }}
                           />
@@ -351,7 +341,7 @@ const GamePage = () => {
           {/* Pagination */}
           <div className="bg-gray-700 px-6 py-4 flex items-center justify-between">
             <div className="text-gray-400 text-sm">
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredBanners.length)} of {filteredBanners.length} entries
+              {t("gamePage.showing", { start: startIndex + 1, end: Math.min(endIndex, filteredBanners.length), total: filteredBanners.length })}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -423,25 +413,25 @@ const GamePage = () => {
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Add New Banner</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("gamePage.addNewBanner")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Image URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("gamePage.imageUrl")}</label>
                   <input
                     type="text"
                     value={newBanner.image || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="Enter image URL"
+                    placeholder={t("gamePage.enterImageUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Redirect URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("gamePage.redirectUrlLabel")}</label>
                   <input
                     type="text"
                     value={newBanner.redirectUrl || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, redirectUrl: e.target.value }))}
-                    placeholder="Enter redirect URL"
+                    placeholder={t("gamePage.enterRedirectUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -450,13 +440,13 @@ const GamePage = () => {
                     onClick={() => setShowCreateModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("gamePage.cancel")}
                   </button>
                   <button
                     onClick={handleCreateBanner}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Add Banner
+                    {t("gamePage.addBanner")}
                   </button>
                 </div>
               </div>
@@ -468,25 +458,25 @@ const GamePage = () => {
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Edit Banner</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("gamePage.editBanner")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Image URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("gamePage.imageUrl")}</label>
                   <input
                     type="text"
                     value={newBanner.image || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="Enter image URL"
+                    placeholder={t("gamePage.enterImageUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Redirect URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("gamePage.redirectUrlLabel")}</label>
                   <input
                     type="text"
                     value={newBanner.redirectUrl || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, redirectUrl: e.target.value }))}
-                    placeholder="Enter redirect URL"
+                    placeholder={t("gamePage.enterRedirectUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -495,13 +485,13 @@ const GamePage = () => {
                     onClick={() => setShowEditModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("gamePage.cancel")}
                   </button>
                   <button
                     onClick={handleEditBanner}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Update Banner
+                    {t("gamePage.updateBanner")}
                   </button>
                 </div>
               </div>

@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
 import LogoutConfirmationDialog from "@/components/shared/LogoutConfirmationDialog";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
@@ -13,8 +15,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const handleConfirmLogout = () => {
     setShowLogoutDialog(false);
-    // Add actual logout logic here (clear tokens, redirect to login, etc.)
-    window.location.href = '/login';
+    signOut(auth).finally(() => {
+      window.location.href = '/login';
+    });
   };
 
   const handleCancelLogout = () => {
@@ -23,15 +26,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar onLogoutClick={handleLogout} />
-        <div className="flex-1 flex flex-col min-w-0">
-          <TopBar />
-          <main className="flex-1 p-6 overflow-auto">
-            {children}
-          </main>
-        </div>
-      </div>
+      <AppSidebar onLogoutClick={handleLogout} />
+      <SidebarInset className="min-w-0">
+        <TopBar />
+        <main className="flex-1 p-6 overflow-auto">
+          {children}
+        </main>
+      </SidebarInset>
       
       {/* Logout Confirmation Dialog */}
       <LogoutConfirmationDialog

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/i18n";
 
 interface WealthLevel {
   id: string;
@@ -27,6 +28,7 @@ interface WealthLevel {
 
 const WealthLevels = () => {
   const { toast } = useToast();
+  const { t, isRTL } = useLanguage();
   const [wealthLevels, setWealthLevels] = useState<WealthLevel[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -237,10 +239,10 @@ const WealthLevels = () => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex-1 max-w-md">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
               <Input 
-                placeholder="Search Wealth Level" 
-                className="pl-10 bg-secondary border-border"
+                placeholder={t("wealthLevelsPage.searchWealthLevel")} 
+                className={`${isRTL ? "pr-10 pl-4" : "pl-10"} bg-secondary border-border`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -266,19 +268,19 @@ const WealthLevels = () => {
                 }}
               >
                 <Plus className="h-4 w-4" />
-                Create Wealth Level
+                {t("wealthLevelsPage.createWealthLevel")}
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-card border-border text-foreground max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">
-                  {editingLevel ? "Edit Wealth Level" : "Create Wealth Level"}
+                  {editingLevel ? t("wealthLevelsPage.editWealthLevel") : t("wealthLevelsPage.createWealthLevel")}
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="name" className="text-sm font-medium">Level Name</Label>
+                    <Label htmlFor="name" className="text-sm font-medium">{t("wealthLevelsPage.levelName")}</Label>
                     <Input
                       id="name"
                       placeholder="Platinum"
@@ -288,7 +290,7 @@ const WealthLevels = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="level" className="text-sm font-medium">Level Number</Label>
+                    <Label htmlFor="level" className="text-sm font-medium">{t("wealthLevelsPage.levelNumber")}</Label>
                     <Input
                       id="level"
                       type="number"
@@ -302,7 +304,7 @@ const WealthLevels = () => {
                 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="icon" className="text-sm font-medium">Icon</Label>
+                    <Label htmlFor="icon" className="text-sm font-medium">{t("wealthLevelsPage.icon")}</Label>
                     <Input
                       id="icon"
                       placeholder="💎"
@@ -312,7 +314,7 @@ const WealthLevels = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="color" className="text-sm font-medium">Color</Label>
+                    <Label htmlFor="color" className="text-sm font-medium">{t("wealthLevelsPage.color")}</Label>
                     <Input
                       id="color"
                       type="color"
@@ -322,7 +324,7 @@ const WealthLevels = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="discountRate" className="text-sm font-medium">Discount Rate (%)</Label>
+                    <Label htmlFor="discountRate" className="text-sm font-medium">{t("wealthLevelsPage.discountRate")}</Label>
                     <Input
                       id="discountRate"
                       type="number"
@@ -336,7 +338,7 @@ const WealthLevels = () => {
                 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="minCoins" className="text-sm font-medium">Min Coins</Label>
+                    <Label htmlFor="minCoins" className="text-sm font-medium">{t("wealthLevelsPage.minCoins")}</Label>
                     <Input
                       id="minCoins"
                       type="number"
@@ -347,7 +349,7 @@ const WealthLevels = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="maxCoins" className="text-sm font-medium">Max Coins</Label>
+                    <Label htmlFor="maxCoins" className="text-sm font-medium">{t("wealthLevelsPage.maxCoins")}</Label>
                     <Input
                       id="maxCoins"
                       type="number"
@@ -358,7 +360,7 @@ const WealthLevels = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="minSpent" className="text-sm font-medium">Min Spent ($)</Label>
+                    <Label htmlFor="minSpent" className="text-sm font-medium">{t("wealthLevelsPage.minSpent")}</Label>
                     <Input
                       id="minSpent"
                       type="number"
@@ -372,7 +374,7 @@ const WealthLevels = () => {
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm font-medium">Benefits</Label>
+                    <Label className="text-sm font-medium">{t("wealthLevelsPage.benefits")}</Label>
                     <Button 
                       type="button" 
                       variant="outline" 
@@ -381,7 +383,7 @@ const WealthLevels = () => {
                       className="bg-secondary border-border"
                     >
                       <Plus className="h-4 w-4 mr-1" />
-                      Add Benefit
+                      {t("wealthLevelsPage.addBenefit")}
                     </Button>
                   </div>
                   <div className="space-y-2">
@@ -415,13 +417,13 @@ const WealthLevels = () => {
                     className="flex-1 bg-secondary border-border"
                     onClick={() => setIsCreateModalOpen(false)}
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </Button>
                   <Button 
                     className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
                     onClick={handleSubmit}
                   >
-                    Submit
+                    {t("common.submit")}
                   </Button>
                 </div>
               </div>
@@ -431,8 +433,8 @@ const WealthLevels = () => {
 
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Wealth Levels</h1>
-          <p className="text-muted-foreground mt-1">Manage user wealth levels and benefits</p>
+          <h1 className="text-3xl font-bold text-foreground">{t("page.wealthLevels")}</h1>
+          <p className="text-muted-foreground mt-1">{t("wealthLevelsPage.manageUserLevels")}</p>
         </div>
 
         {/* Wealth Levels Grid */}
@@ -452,7 +454,7 @@ const WealthLevels = () => {
             ))
           ) : wealthLevels.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <div className="text-muted-foreground">No wealth levels found. Click 'Create Wealth Level' to create your first level.</div>
+              <div className="text-muted-foreground">{t("wealthLevelsPage.noWealthLevelsFound")}</div>
             </div>
           ) : (
             wealthLevels.map((level) => (
@@ -489,15 +491,15 @@ const WealthLevels = () => {
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-bold text-lg text-foreground">{level.name}</h3>
-                    <span className="text-sm font-medium text-muted-foreground">Level {level.level}</span>
+                    <span className="text-sm font-medium text-muted-foreground">{t("wealthLevelsPage.level")} {level.level}</span>
                   </div>
                   
                   <div className="text-xs text-muted-foreground space-y-1 mb-4">
-                    <div>Min: {level.minCoins.toLocaleString()} coins</div>
-                    <div>Max: {level.maxCoins.toLocaleString()} coins</div>
-                    <div>Min Spent: ${level.minSpent}</div>
+                    <div>{t("wealthLevelsPage.min")}: {level.minCoins.toLocaleString()} {t("wealthLevelsPage.coins")}</div>
+                    <div>{t("wealthLevelsPage.max")}: {level.maxCoins.toLocaleString()} {t("wealthLevelsPage.coins")}</div>
+                    <div>{t("wealthLevelsPage.minSpentLabel")}: ${level.minSpent}</div>
                     {level.discountRate > 0 && (
-                      <div className="text-green-500 font-medium">Discount: {level.discountRate}%</div>
+                      <div className="text-green-500 font-medium">{t("wealthLevelsPage.discount")}: {level.discountRate}%</div>
                     )}
                   </div>
                   
@@ -510,7 +512,7 @@ const WealthLevels = () => {
                     ))}
                     {level.benefits.length > 3 && (
                       <div className="text-xs text-muted-foreground">
-                        +{level.benefits.length - 3} more benefits
+                        <span>{t("wealthLevelsPage.moreBenefits", { count: level.benefits.length - 3 })}</span>
                       </div>
                     )}
                   </div>

@@ -4,8 +4,10 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { helpRequestsService, HelpRequestData } from "@/lib/helpRequestsService";
+import { useLanguage } from "@/lib/i18n";
 
 const HelpRequests = () => {
+  const { t, isRTL } = useLanguage();
   const [requests, setRequests] = useState<HelpRequestData[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<HelpRequestData[]>([]);
   const [statusFilter, setStatusFilter] = useState<'pending' | 'solved'>('pending');
@@ -103,8 +105,8 @@ const HelpRequests = () => {
         {/* Header */}
         <div className="mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Help Requests</h1>
-            <p className="text-muted-foreground mt-1">Review and respond to user support requests</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("page.helpRequests")}</h1>
+            <p className="text-muted-foreground mt-1">{t("helpRequestsPage.reviewRespondRequests")}</p>
           </div>
         </div>
 
@@ -114,13 +116,13 @@ const HelpRequests = () => {
             variant={statusFilter === 'pending' ? 'default' : 'outline'}
             onClick={() => setStatusFilter('pending')}
           >
-            Pending
+            {t("helpRequestsPage.pending")}
           </Button>
           <Button
             variant={statusFilter === 'solved' ? 'default' : 'outline'}
             onClick={() => setStatusFilter('solved')}
           >
-            Solved
+            {t("helpRequestsPage.solved")}
           </Button>
         </div>
 
@@ -128,7 +130,7 @@ const HelpRequests = () => {
         <div className="bg-card border-border rounded-lg overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="text-muted-foreground">Loading help requests...</div>
+              <div className="text-muted-foreground">{t("helpRequestsPage.loadingRequests")}</div>
             </div>
           ) : (
             <>
@@ -136,13 +138,13 @@ const HelpRequests = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border">
-                      <th className="text-left p-4 font-medium text-muted-foreground">USER</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">NAME</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">HELP REQUEST</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">CONTACT</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">DATE</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">IMAGE</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">ACTIONS</th>
+                      <th className={`text-${isRTL ? "right" : "left"} p-4 font-medium text-muted-foreground`}>{t("helpRequestsPage.user")}</th>
+                      <th className={`text-${isRTL ? "right" : "left"} p-4 font-medium text-muted-foreground`}>{t("helpRequestsPage.name")}</th>
+                      <th className={`text-${isRTL ? "right" : "left"} p-4 font-medium text-muted-foreground`}>{t("helpRequestsPage.helpRequest")}</th>
+                      <th className={`text-${isRTL ? "right" : "left"} p-4 font-medium text-muted-foreground`}>{t("helpRequestsPage.contact")}</th>
+                      <th className={`text-${isRTL ? "right" : "left"} p-4 font-medium text-muted-foreground`}>{t("helpRequestsPage.date")}</th>
+                      <th className={`text-${isRTL ? "right" : "left"} p-4 font-medium text-muted-foreground`}>{t("helpRequestsPage.image")}</th>
+                      <th className={`text-${isRTL ? "right" : "left"} p-4 font-medium text-muted-foreground`}>{t("common.actions")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -166,7 +168,7 @@ const HelpRequests = () => {
                             {request.helpRequest}
                           </div>
                           <button className="text-primary hover:text-primary/80 text-sm mt-1">
-                            Read more
+                            {t("helpRequestsPage.readMore")}
                           </button>
                         </td>
                         <td className="p-4">
@@ -190,14 +192,14 @@ const HelpRequests = () => {
                             <button
                               onClick={() => handleStatusChange(request.id!, 'solved')}
                               className="p-2 rounded hover:bg-green-600/20 transition-colors group"
-                              title="Mark as solved"
+                              title={t("helpRequestsPage.markAsSolved")}
                             >
                               <Check className="w-4 h-4 text-green-500 group-hover:text-green-400" />
                             </button>
                             <button
                               onClick={() => handleDelete(request.id!)}
                               className="p-2 rounded hover:bg-red-600/20 transition-colors group"
-                              title="Delete"
+                              title={t("common.delete")}
                             >
                               <X className="w-4 h-4 text-red-500 group-hover:text-red-400" />
                             </button>
@@ -212,7 +214,7 @@ const HelpRequests = () => {
               {/* Pagination */}
               <div className="flex items-center justify-between p-4 border-t border-border">
                 <div className="text-sm text-muted-foreground">
-                  Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredRequests.length)} of {filteredRequests.length} entries
+                  {t("helpRequestsPage.showing", { start: indexOfFirstItem + 1, end: Math.min(indexOfLastItem, filteredRequests.length), total: filteredRequests.length })}
                 </div>
                 <div className="flex items-center gap-2">
                   <button

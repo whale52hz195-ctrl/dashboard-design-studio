@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, DollarSign } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface Gift {
   id: string;
@@ -23,6 +24,7 @@ interface GiftCategory {
 }
 
 const Gifts = () => {
+  const { t, isRTL } = useLanguage();
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -158,7 +160,7 @@ const Gifts = () => {
           />
           {featured && (
             <div className="absolute top-2 right-2 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded">
-              Featured
+              {t("giftsPage.featured")}
             </div>
           )}
         </div>
@@ -173,7 +175,7 @@ const Gifts = () => {
           <div className="text-xs text-gray-400">SVGA</div>
           {featured && (
             <div className="absolute top-2 right-2 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded">
-              Featured
+              {t("giftsPage.featured")}
             </div>
           )}
         </div>
@@ -199,7 +201,7 @@ const Gifts = () => {
           />
           {featured && (
             <div className="absolute top-2 right-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded">
-              GIF
+              {t("giftsPage.gif")}
             </div>
           )}
         </div>
@@ -238,28 +240,28 @@ const Gifts = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">Gifts</h1>
-            <p className="text-gray-400 mt-1">Manage your gift categories and items</p>
+            <h1 className="text-3xl font-bold text-white">{t("giftsPage.title")}</h1>
+            <p className="text-gray-400 mt-1">{t("giftsPage.manageGiftCategories")}</p>
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Add New Gift
+            {t("giftsPage.addNewGift")}
           </button>
         </div>
 
         {/* Search and Filter */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5`} />
             <input
               type="text"
-              placeholder="Search gifts..."
+              placeholder={t("giftsPage.searchGifts")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full bg-gray-800 border border-gray-700 rounded-lg ${isRTL ? "pr-10 pl-4" : "pl-10 pr-4"} py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500`}
             />
           </div>
           
@@ -284,11 +286,11 @@ const Gifts = () => {
         {/* Gifts Grid by Category */}
         {loading ? (
           <div className="text-center py-20">
-            <div className="text-gray-400">Loading gifts from Firestore...</div>
+            <div className="text-gray-400">{t("giftsPage.loadingGifts")}</div>
           </div>
         ) : filteredGifts.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-gray-400">No gifts found</div>
+            <div className="text-gray-400">{t("giftsPage.noGiftsFound")}</div>
           </div>
         ) : (
           <div className="space-y-8">
@@ -297,10 +299,10 @@ const Gifts = () => {
                 {/* Category Header */}
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-white">
-                    {category} <span className="text-gray-400 text-sm ml-2">({categoryGifts.length} gifts)</span>
+                    {category} <span className="text-gray-400 text-sm ml-2">({categoryGifts.length} {t("giftsPage.gifts")})</span>
                   </h2>
                   <button className="text-purple-400 hover:text-purple-300 text-sm font-medium">
-                    Add
+                    {t("giftsPage.add")}
                   </button>
                 </div>
                 
@@ -330,16 +332,16 @@ const Gifts = () => {
                         </div>
                         
                         <div className="text-gray-400 text-sm mb-4">
-                          Created {formatDate(gift.createdAt)}
+                          {t("giftsPage.created")} {formatDate(gift.createdAt)}
                         </div>
                         
                         {/* Stats */}
                         <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
                           <div className="text-gray-400">
-                            <span className="text-white font-medium">{gift.totalSent.toLocaleString()}</span> sent
+                            <span className="text-white font-medium">{gift.totalSent.toLocaleString()}</span> {t("giftsPage.sent")}
                           </div>
                           <div className="text-gray-400">
-                            <span className="text-white font-medium">${gift.totalRevenue.toLocaleString()}</span> revenue
+                            <span className="text-white font-medium">${gift.totalRevenue.toLocaleString()}</span> {t("giftsPage.revenue")}
                           </div>
                         </div>
                         
@@ -358,7 +360,7 @@ const Gifts = () => {
                             <Trash2 className="h-5 w-5" />
                           </button>
                           <button className="ml-auto text-purple-400 hover:text-purple-300 text-sm font-medium">
-                            Add Bill
+                            {t("giftsPage.addBill")}
                           </button>
                         </div>
                       </div>
@@ -374,37 +376,37 @@ const Gifts = () => {
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Add New Gift</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("giftsPage.addNewGiftTitle")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Gift Name</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftsPage.giftName")}</label>
                   <input
                     type="text"
                     value={newGift.name || ''}
                     onChange={(e) => setNewGift(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter gift name"
+                    placeholder={t("giftsPage.enterGiftName")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Gift Image/Emoji</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftsPage.giftImageEmoji")}</label>
                   <input
                     type="text"
                     value={newGift.image || ''}
                     onChange={(e) => setNewGift(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="Enter emoji (❤️) or image URL (https://...)"
+                    placeholder={t("giftsPage.enterGiftImageEmoji")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
-                  <p className="text-xs text-gray-400 mt-1">Supports: Emoji, Image URLs, GIFs, SVGA files</p>
+                  <p className="text-xs text-gray-400 mt-1">{t("giftsPage.supportsFormats")}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftsPage.category")}</label>
                   <select
                     value={newGift.category || ''}
                     onChange={(e) => setNewGift(prev => ({ ...prev, category: e.target.value }))}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
-                    <option value="">Select category</option>
+                    <option value="">{t("giftsPage.selectCategory")}</option>
                     {categories.map(category => (
                       <option key={category} value={category}>
                         {category}
@@ -413,12 +415,12 @@ const Gifts = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Price</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftsPage.price")}</label>
                   <input
                     type="number"
                     value={newGift.price || ''}
                     onChange={(e) => setNewGift(prev => ({ ...prev, price: parseInt(e.target.value) || 0 }))}
-                    placeholder="Enter price"
+                    placeholder={t("giftsPage.enterPrice")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -429,20 +431,20 @@ const Gifts = () => {
                     onChange={(e) => setNewGift(prev => ({ ...prev, featured: e.target.checked }))}
                     className="h-4 w-4"
                   />
-                  <label className="text-sm font-medium text-gray-300">Featured</label>
+                  <label className="text-sm font-medium text-gray-300">{t("giftsPage.featured")}</label>
                 </div>
                 <div className="flex gap-3 justify-end pt-4">
                   <button
                     onClick={() => setShowCreateModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("giftsPage.cancel")}
                   </button>
                   <button
                     onClick={handleCreateGift}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Add Gift
+                    {t("giftsPage.addGiftButton")}
                   </button>
                 </div>
               </div>

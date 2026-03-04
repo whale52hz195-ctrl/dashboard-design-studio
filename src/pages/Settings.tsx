@@ -36,7 +36,7 @@ const inputClass = "bg-secondary border-border text-foreground placeholder:text-
 
 export default function Settings() {
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
@@ -137,7 +137,7 @@ export default function Settings() {
     return (
       <DashboardLayout>
         <div className="text-center text-muted-foreground">
-          <p>Failed to load settings</p>
+          <p>{t("settingsPage.loadingError")}</p>
         </div>
       </DashboardLayout>
     );
@@ -182,114 +182,114 @@ export default function Settings() {
 
           {/* General */}
           <TabsContent value="general" className="space-y-4 mt-4">
-            <SettingSection title="Call Rate Setting">
+            <SettingSection title={t("settingsPage.callRateSetting")}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <SettingField label="Private Video Call Rate (coins/minute)">
+                <SettingField label={t("settingsPage.privateVideoCallRate")}>
                   <Input className={inputClass} value={settings.general.privateVideoCallRate} onChange={e => setSettings({ ...settings, general: { ...settings.general, privateVideoCallRate: e.target.value } })} />
                 </SettingField>
-                <SettingField label="Private Audio Call Rate (coins/minute)">
+                <SettingField label={t("settingsPage.privateAudioCallRate")}>
                   <Input className={inputClass} value={settings.general.privateAudioCallRate} onChange={e => setSettings({ ...settings, general: { ...settings.general, privateAudioCallRate: e.target.value } })} />
                 </SettingField>
               </div>
             </SettingSection>
 
-            <SettingSection title="App Setting">
+            <SettingSection title={t("settingsPage.appSetting")}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <SettingField label="Login Bonus">
+                <SettingField label={t("settingsPage.loginBonus")}>
                   <Input className={inputClass} value={settings.general.loginBonus} onChange={e => setSettings({ ...settings, general: { ...settings.general, loginBonus: e.target.value } })} />
                 </SettingField>
-                <SettingField label="Duration of Shorts (seconds)">
+                <SettingField label={t("settingsPage.durationOfShorts")}>
                   <Input className={inputClass} value={settings.general.durationOfShorts} onChange={e => setSettings({ ...settings, general: { ...settings.general, durationOfShorts: e.target.value } })} />
                 </SettingField>
-                <SettingField label="PK End Time (seconds)">
+                <SettingField label={t("settingsPage.pkEndTime")}>
                   <Input className={inputClass} value={settings.general.pkEndTime} onChange={e => setSettings({ ...settings, general: { ...settings.general, pkEndTime: e.target.value } })} />
                 </SettingField>
-                <SettingField label="Admin Rate (%)">
+                <SettingField label={t("settingsPage.adminRate")}>
                   <Input className={inputClass} value={settings.general.adminRate} onChange={e => setSettings({ ...settings, general: { ...settings.general, adminRate: e.target.value } })} />
                 </SettingField>
               </div>
             </SettingSection>
 
-            <SettingSection title="Agora Setting">
+            <SettingSection title={t("settingsPage.agoraSetting")}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <SettingField label="Agora App ID">
-                  <Input className={inputClass} value={settings.general.agoraAppId} onChange={e => setSettings({ ...settings, general: { ...settings.general, agoraAppId: e.target.value } })} placeholder="Enter Agora App ID" />
+                <SettingField label={t("settingsPage.agoraAppId")}>
+                  <Input className={inputClass} value={settings.general.agoraAppId} onChange={e => setSettings({ ...settings, general: { ...settings.general, agoraAppId: e.target.value } })} placeholder={t("settingsPage.enterAgoraAppId")} />
                 </SettingField>
-                <SettingField label="Agora App Certificate">
-                  <Input className={inputClass} value={settings.general.agoraAppCertificate} onChange={e => setSettings({ ...settings, general: { ...settings.general, agoraAppCertificate: e.target.value } })} placeholder="Enter Agora App Certificate" />
+                <SettingField label={t("settingsPage.agoraAppCertificate")}>
+                  <Input className={inputClass} value={settings.general.agoraAppCertificate} onChange={e => setSettings({ ...settings, general: { ...settings.general, agoraAppCertificate: e.target.value } })} placeholder={t("settingsPage.enterAgoraAppCertificate")} />
                 </SettingField>
               </div>
             </SettingSection>
 
-            <SettingSection title="Banner Announcement Setting">
+            <SettingSection title={t("settingsPage.bannerAnnouncementSetting")}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <SettingField label="Minimum Gift Announcement Coin">
+                <SettingField label={t("settingsPage.minGiftAnnouncementCoin")}>
                   <Input className={inputClass} value={settings.general.minGiftAnnouncementCoin} onChange={e => setSettings({ ...settings, general: { ...settings.general, minGiftAnnouncementCoin: e.target.value } })} />
                 </SettingField>
-                <SettingField label="Minimum Game Announcement Coin">
+                <SettingField label={t("settingsPage.minGameAnnouncementCoin")}>
                   <Input className={inputClass} value={settings.general.minGameAnnouncementCoin} onChange={e => setSettings({ ...settings, general: { ...settings.general, minGameAnnouncementCoin: e.target.value } })} />
                 </SettingField>
               </div>
             </SettingSection>
 
-            <SettingSection title="Fake Data Setting">
+            <SettingSection title={t("settingsPage.fakeDataSetting")}>
               <div className="flex items-center gap-3">
                 <Switch checked={settings.general.fakeDataEnabled} onCheckedChange={v => setSettings({ ...settings, general: { ...settings.general, fakeDataEnabled: v } })} />
-                <span className="text-muted-foreground text-sm">Enable Fake Data</span>
+                <span className="text-muted-foreground text-sm">{t("settingsPage.enableFakeData")}</span>
               </div>
             </SettingSection>
 
-            <SettingSection title="Policy Links">
+            <SettingSection title={t("settingsPage.policyLinks")}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <SettingField label="Privacy Policy Link">
+                <SettingField label={t("settingsPage.privacyPolicyLink")}>
                   <Input className={inputClass} value={settings.general.privacyPolicyLink} onChange={e => setSettings({ ...settings, general: { ...settings.general, privacyPolicyLink: e.target.value } })} />
                 </SettingField>
-                <SettingField label="Terms of Use Policy Link">
+                <SettingField label={t("settingsPage.termsOfUsePolicyLink")}>
                   <Input className={inputClass} value={settings.general.termsOfUseLink} onChange={e => setSettings({ ...settings, general: { ...settings.general, termsOfUseLink: e.target.value } })} />
                 </SettingField>
               </div>
             </SettingSection>
 
-            <SettingSection title="Shorts Effect Setting">
+            <SettingSection title={t("settingsPage.shortsEffectSetting")}>
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.general.shortsEffectEnabled} onCheckedChange={v => setSettings({ ...settings, general: { ...settings.general, shortsEffectEnabled: v } })} />
-                <span className="text-muted-foreground text-sm">Enable Shorts Effect</span>
+                <span className="text-muted-foreground text-sm">{t("settingsPage.enableShortsEffect")}</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <SettingField label="License Key">
-                  <Input className={inputClass} value={settings.general.shortsLicenseKey} onChange={e => setSettings({ ...settings, general: { ...settings.general, shortsLicenseKey: e.target.value } })} placeholder="Enter License Key" />
+                <SettingField label={t("settingsPage.licenseKey")}>
+                  <Input className={inputClass} value={settings.general.shortsLicenseKey} onChange={e => setSettings({ ...settings, general: { ...settings.general, shortsLicenseKey: e.target.value } })} placeholder={t("settingsPage.enterLicenseKey")} />
                 </SettingField>
-                <SettingField label="License Secret">
-                  <Input className={inputClass} value={settings.general.shortsLicenseSecret} onChange={e => setSettings({ ...settings, general: { ...settings.general, shortsLicenseSecret: e.target.value } })} placeholder="Enter License Secret" />
+                <SettingField label={t("settingsPage.licenseSecret")}>
+                  <Input className={inputClass} value={settings.general.shortsLicenseSecret} onChange={e => setSettings({ ...settings, general: { ...settings.general, shortsLicenseSecret: e.target.value } })} placeholder={t("settingsPage.enterLicenseSecret")} />
                 </SettingField>
               </div>
             </SettingSection>
 
-            <SettingSection title="Watermark Setting">
+            <SettingSection title={t("settingsPage.watermarkSetting")}>
               <div className="flex items-center gap-3 mb-3">
                 <Switch checked={settings.general.watermarkEnabled} onCheckedChange={v => setSettings({ ...settings, general: { ...settings.general, watermarkEnabled: v } })} />
-                <span className="text-muted-foreground text-sm">Enable Watermark</span>
+                <span className="text-muted-foreground text-sm">{t("settingsPage.enableWatermark")}</span>
               </div>
               <div className="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary/50 transition-colors">
                 <Upload className="h-8 w-8 text-muted-foreground" />
-                <p className="text-muted-foreground text-sm">Click to upload watermark image</p>
+                <p className="text-muted-foreground text-sm">{t("settingsPage.clickToUploadWatermark")}</p>
               </div>
             </SettingSection>
 
-            <SettingSection title="Lucky Gift Setting">
+            <SettingSection title={t("settingsPage.luckyGiftSetting")}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <SettingField label="Admin Tax Percent (%)">
+                <SettingField label={t("settingsPage.adminTaxPercent")}>
                   <Input className={inputClass} value={settings.general.adminTaxPercent} onChange={e => setSettings({ ...settings, general: { ...settings.general, adminTaxPercent: e.target.value } })} />
                 </SettingField>
-                <SettingField label="Receiver Share Percent (%)">
+                <SettingField label={t("settingsPage.receiverSharePercent")}>
                   <Input className={inputClass} value={settings.general.receiverSharePercent} onChange={e => setSettings({ ...settings, general: { ...settings.general, receiverSharePercent: e.target.value } })} />
                 </SettingField>
               </div>
             </SettingSection>
 
-            <SettingSection title="Firebase Notification Setting">
-              <SettingField label="Private Key JSON">
-                <Textarea className={`${inputClass} min-h-[120px]`} value={settings.general.firebasePrivateKey} onChange={e => setSettings({ ...settings, general: { ...settings.general, firebasePrivateKey: e.target.value } })} placeholder="Paste your Firebase private key JSON here..." />
+            <SettingSection title={t("settingsPage.firebaseNotificationSetting")}>
+              <SettingField label={t("settingsPage.privateKeyJson")}>
+                <Textarea className={`${inputClass} min-h-[120px]`} value={settings.general.firebasePrivateKey} onChange={e => setSettings({ ...settings, general: { ...settings.general, firebasePrivateKey: e.target.value } })} placeholder={t("settingsPage.pasteFirebasePrivateKey")} />
               </SettingField>
             </SettingSection>
           </TabsContent>
@@ -402,15 +402,15 @@ export default function Settings() {
               <Dialog open={reasonDialog} onOpenChange={setReasonDialog}>
                 <DialogTrigger asChild>
                   <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 text-xs" onClick={() => setEditingReason({ title: "" })}>
-                    <Plus className="h-4 w-4" /> Add New Reason
+                    <Plus className="h-4 w-4" /> {t("settingsPage.addNewReason")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-card border-border text-foreground">
                   <DialogHeader>
-                    <DialogTitle>{editingReason.id ? "Edit" : "Add"} Report Reason</DialogTitle>
+                    <DialogTitle>{editingReason.id ? t("settingsPage.editReportReason") : t("settingsPage.addReportReason")}</DialogTitle>
                   </DialogHeader>
-                  <SettingField label="Reason Title">
-                    <Input className={inputClass} value={editingReason.title} onChange={e => setEditingReason(p => ({ ...p, title: e.target.value }))} placeholder="Enter reason title" />
+                  <SettingField label={t("settingsPage.reasonTitle")}>
+                    <Input className={inputClass} value={editingReason.title} onChange={e => setEditingReason(p => ({ ...p, title: e.target.value }))} placeholder={t("settingsPage.enterReasonTitle")} />
                   </SettingField>
                   <DialogFooter>
                     <Button onClick={handleSaveReason} className="bg-primary hover:bg-primary/90 text-primary-foreground">{t("common.save")}</Button>
@@ -422,9 +422,9 @@ export default function Settings() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-border hover:bg-transparent">
-                    <TableHead className="text-muted-foreground">Title</TableHead>
-                    <TableHead className="text-muted-foreground">Created At</TableHead>
-                    <TableHead className="text-muted-foreground">Updated At</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.title")}</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.createdAt")}</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.updatedAt")}</TableHead>
                     <TableHead className="text-muted-foreground text-right">{t("common.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -458,24 +458,24 @@ export default function Settings() {
               <Dialog open={currencyDialog} onOpenChange={setCurrencyDialog}>
                 <DialogTrigger asChild>
                   <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 text-xs" onClick={() => setEditingCurrency({ name: "", symbol: "", countryCode: "", currencyCode: "" })}>
-                    <Plus className="h-4 w-4" /> Add Currency
+                    <Plus className="h-4 w-4" /> {t("settingsPage.addCurrency")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-card border-border text-foreground">
                   <DialogHeader>
-                    <DialogTitle>{editingCurrency.id ? "Edit" : "Add"} Currency</DialogTitle>
+                    <DialogTitle>{editingCurrency.id ? t("settingsPage.editCurrency") : t("settingsPage.addCurrency")}</DialogTitle>
                   </DialogHeader>
                   <div className="grid grid-cols-2 gap-4">
-                    <SettingField label="Name">
+                    <SettingField label={t("settingsPage.name")}>
                       <Input className={inputClass} value={editingCurrency.name} onChange={e => setEditingCurrency(p => ({ ...p, name: e.target.value }))} />
                     </SettingField>
-                    <SettingField label="Symbol">
+                    <SettingField label={t("settingsPage.symbol")}>
                       <Input className={inputClass} value={editingCurrency.symbol} onChange={e => setEditingCurrency(p => ({ ...p, symbol: e.target.value }))} />
                     </SettingField>
-                    <SettingField label="Country Code">
+                    <SettingField label={t("settingsPage.countryCode")}>
                       <Input className={inputClass} value={editingCurrency.countryCode} onChange={e => setEditingCurrency(p => ({ ...p, countryCode: e.target.value }))} />
                     </SettingField>
-                    <SettingField label="Currency Code">
+                    <SettingField label={t("settingsPage.currencyCode")}>
                       <Input className={inputClass} value={editingCurrency.currencyCode} onChange={e => setEditingCurrency(p => ({ ...p, currencyCode: e.target.value }))} />
                     </SettingField>
                   </div>
@@ -489,11 +489,11 @@ export default function Settings() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-border hover:bg-transparent">
-                    <TableHead className="text-muted-foreground">Name</TableHead>
-                    <TableHead className="text-muted-foreground">Symbol</TableHead>
-                    <TableHead className="text-muted-foreground">Country Code</TableHead>
-                    <TableHead className="text-muted-foreground">Currency Code</TableHead>
-                    <TableHead className="text-muted-foreground">Default</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.name")}</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.symbol")}</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.countryCode")}</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.currencyCode")}</TableHead>
+                    <TableHead className={`text-muted-foreground ${isRTL ? "text-right" : "text-left"}`}>{t("settingsPage.default")}</TableHead>
                     <TableHead className="text-muted-foreground text-right">{t("common.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>

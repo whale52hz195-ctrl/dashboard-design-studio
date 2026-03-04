@@ -1,28 +1,41 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/lib/i18n";
+import { auth } from "@/lib/firebase";
+import { toast } from "sonner";
 import LoginImage from "../storage/Login.png";
 const IconLogo = "https://firebasestorage.googleapis.com/v0/b/alkasser-d7701.firebasestorage.app/o/images%2FIconLogo.jpeg?alt=media&token=24ff1d49-2541-48f2-9902-86f5deafe345";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const [email, setEmail] = useState("demo@admin.com");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    try {
+      setLoading(true);
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      toast.error("Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className={`min-h-screen flex ${isRTL ? "flex-row-reverse" : ""}`}>
       {/* Left - Login Image */}
-      <div className="hidden lg:flex lg:w-1/2 relative">
+      <div className={`hidden lg:flex lg:w-1/2 relative ${isRTL ? "order-2" : ""}`}>
         <img 
           src={LoginImage} 
           alt="Login" 
@@ -31,7 +44,7 @@ const Login = () => {
       </div>
 
       {/* Right - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-gray-900">
+      <div className={`flex-1 flex items-center justify-center p-8 bg-gray-900 ${isRTL ? "order-1" : ""}`}>
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 text-center">
@@ -77,7 +90,7 @@ const Login = () => {
                   {t("login.rememberMe")}
                 </Label>
               </div>
-              <button type="button" className="text-sm text-primary hover:text-primary/80">
+              <button type="button" className={`text-sm text-primary hover:text-primary/80 ${isRTL ? "ml-auto" : ""}`}>
                 {t("login.forgotPassword")}
               </button>
             </div>
@@ -85,6 +98,7 @@ const Login = () => {
             <Button 
               type="submit" 
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+              disabled={loading}
             >
               {t("login.logIn")}
             </Button>
@@ -92,7 +106,13 @@ const Login = () => {
             <Button
               type="button"
               className="w-full bg-red-500 hover:bg-red-600 text-white"
-              onClick={() => navigate("/dashboard")}
+              onClick={() => {
+                // Demo login - bypass authentication
+                console.log("Demo login - bypassing authentication");
+                localStorage.setItem('demoMode', 'true');
+                navigate("/dashboard");
+              }}
+              disabled={loading}
             >
               {t("login.demoLogIn")}
             </Button>

@@ -17,4 +17,13 @@ export default defineConfig({
       "@": resolve(__dirname, "./src"),
     },
   },
+  define: {
+    // Define process for browser compatibility
+    global: "globalThis",
+    "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
+  },
+  optimizeDeps: {
+    include: ['firebase/firestore'],
+    exclude: ['firebase-admin', 'google-auth-library', 'google-logging-utils', 'gcp-metadata'],
+  },
 });

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { mockRides, mockThemes, mockFrames } from "@/data/mockStoreData";
+import { useLanguage } from "@/lib/i18n";
 
 interface StoreItem {
   id: number;
@@ -40,6 +41,7 @@ interface StorePageProps {
 }
 
 const StorePage = ({ title, type, initialData }: StorePageProps) => {
+  const { t, isRTL } = useLanguage();
   const [items, setItems] = useState<StoreItem[]>(initialData);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -56,7 +58,7 @@ const StorePage = ({ title, type, initialData }: StorePageProps) => {
   };
 
   const handleDelete = (id: number) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
+    if (window.confirm(t("storePage.deleteConfirm"))) {
       setItems(items.filter(item => item.id !== id));
     }
   };
@@ -66,21 +68,21 @@ const StorePage = ({ title, type, initialData }: StorePageProps) => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">{title} Collection</h1>
-            <p className="text-muted-foreground">Manage your {type.toLowerCase()} collection</p>
+            <h1 className="text-2xl font-bold tracking-tight text-white">{t("storePage.title", { type: title })}</h1>
+            <p className="text-muted-foreground">{t("storePage.manageCollection", { type: type.toLowerCase() })}</p>
           </div>
           <Button onClick={() => { setEditingItem(null); setIsDialogOpen(true); }} className="bg-[#7c3aed] hover:bg-[#6d28d9]">
-            <Plus className="mr-2 h-4 w-4" /> Create {type.slice(0, -1)}
+            <Plus className="mr-2 h-4 w-4" /> {t("storePage.create", { type: type.slice(0, -1) })}
           </Button>
         </div>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
           <Input
-            placeholder="Search items..."
+            placeholder={t("storePage.searchItems")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-[#1e293b] border-slate-700 text-white w-full max-w-sm"
+            className={`${isRTL ? "pr-10 pl-4" : "pl-10"} bg-[#1e293b] border-slate-700 text-white w-full max-w-sm`}
           />
         </div>
 
@@ -104,18 +106,18 @@ const StorePage = ({ title, type, initialData }: StorePageProps) => {
               </div>
               <CardContent className="p-4 space-y-4">
                 <h3 className="font-semibold text-lg text-white">
-                  {type === "Frames" ? `Name: ${item.name}` : item.name}
+                  {type === "Frames" ? `${t("storePage.name")}: ${item.name}` : item.name}
                 </h3>
                 
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="space-y-1">
-                    <p className="text-slate-400">Price</p>
+                    <p className="text-slate-400">{t("storePage.price")}</p>
                     <p className="text-white flex items-center gap-1">
-                      <Coins className="h-3 w-3 text-yellow-400" /> {item.price.toLocaleString()} Coins
+                      <Coins className="h-3 w-3 text-yellow-400" /> {item.price.toLocaleString()} {t("storePage.coins")}
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-slate-400">Validity</p>
+                    <p className="text-slate-400">{t("storePage.validity")}</p>
                     <p className="text-white flex items-center gap-1">
                       <Calendar className="h-3 w-3 text-blue-400" /> {item.validity} {item.validityType}
                     </p>
@@ -123,7 +125,7 @@ const StorePage = ({ title, type, initialData }: StorePageProps) => {
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-700">
-                  <p className="text-xs text-slate-500">Added on {item.addedDate}</p>
+                  <p className="text-xs text-slate-500">{t("storePage.addedOn")} {item.addedDate}</p>
                   <div className="flex gap-2">
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10" onClick={() => { setEditingItem(item); setIsDialogOpen(true); }}>
                       <Edit2 className="h-4 w-4" />
@@ -142,54 +144,54 @@ const StorePage = ({ title, type, initialData }: StorePageProps) => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-[#1e293b] border-slate-700 text-white sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{editingItem ? 'Edit' : 'Create'} {type.slice(0, -1)}</DialogTitle>
+            <DialogTitle>{editingItem ? t("storePage.edit") : t("storePage.create")} {type.slice(0, -1)}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">{type.slice(0, -1)} Name</Label>
+              <Label htmlFor="name">{type.slice(0, -1)} {t("storePage.name")}</Label>
               <Input id="name" defaultValue={editingItem?.name} className="bg-[#0f172a] border-slate-700" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="coins">Coins</Label>
+              <Label htmlFor="coins">{t("storePage.coins")}</Label>
               <Input id="coins" type="number" defaultValue={editingItem?.price} className="bg-[#0f172a] border-slate-700" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="validity">Validity</Label>
+              <Label htmlFor="validity">{t("storePage.validity")}</Label>
               <Input id="validity" type="number" defaultValue={editingItem?.validity} className="bg-[#0f172a] border-slate-700" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="validityType">Validity Type</Label>
+              <Label htmlFor="validityType">{t("storePage.validityType")}</Label>
               <Select defaultValue={editingItem?.validityType || "Days"}>
                 <SelectTrigger className="bg-[#0f172a] border-slate-700">
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t("storePage.selectType")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[#1e293b] border-slate-700 text-white">
-                  <SelectItem value="Days">Days</SelectItem>
-                  <SelectItem value="Months">Months</SelectItem>
-                  <SelectItem value="Years">Years</SelectItem>
+                  <SelectItem value="Days">{t("storePage.days")}</SelectItem>
+                  <SelectItem value="Months">{t("storePage.months")}</SelectItem>
+                  <SelectItem value="Years">{t("storePage.years")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
              <div className="space-y-2">
-              <Label htmlFor="rideType">{type.slice(0, -1)} Type</Label>
+              <Label htmlFor="rideType">{type.slice(0, -1)} {t("storePage.type")}</Label>
               <Select defaultValue="Image">
                 <SelectTrigger className="bg-[#0f172a] border-slate-700">
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t("storePage.selectType")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[#1e293b] border-slate-700 text-white">
-                  <SelectItem value="Image">Image</SelectItem>
-                  <SelectItem value="GIF">GIF</SelectItem>
+                  <SelectItem value="Image">{t("storePage.image")}</SelectItem>
+                  <SelectItem value="GIF">{t("storePage.gif")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <Button variant="outline" className="w-full border-dashed border-slate-700 hover:bg-slate-800 text-slate-400">
-              <Plus className="mr-2 h-4 w-4" /> Upload Image/GIF
+              <Plus className="mr-2 h-4 w-4" /> {t("storePage.uploadImageGif")}
             </Button>
-            <p className="text-[10px] text-slate-500 text-center">Accepted formats: .jpg, .jpeg, .png, .webp</p>
+            <p className="text-[10px] text-slate-500 text-center">{t("storePage.acceptedFormats")}</p>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-400 hover:text-white">Cancel</Button>
-            <Button onClick={() => setIsDialogOpen(false)} className="bg-[#7c3aed] hover:bg-[#6d28d9]">Submit</Button>
+            <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-400 hover:text-white">{t("storePage.cancel")}</Button>
+            <Button onClick={() => setIsDialogOpen(false)} className="bg-[#7c3aed] hover:bg-[#6d28d9]">{t("storePage.submit")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

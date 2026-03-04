@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface BeautyEffect {
   id: string;
@@ -13,6 +14,7 @@ interface BeautyEffect {
 }
 
 const BeautyEffects = () => {
+  const { t, isRTL } = useLanguage();
   const [effects, setEffects] = useState<BeautyEffect[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -150,13 +152,13 @@ const BeautyEffects = () => {
       <div className="min-h-screen bg-gray-900 p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white">Beauty Effects</h1>
+          <h1 className="text-3xl font-bold text-white">{t("page.beautyEffects")}</h1>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Create Beauty Effect
+            {t("beautyEffectsPage.createBeautyEffect")}
           </button>
         </div>
 
@@ -164,7 +166,7 @@ const BeautyEffects = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-20">
-              <div className="text-gray-400">Loading beauty effects...</div>
+              <div className="text-gray-400">{t("beautyEffectsPage.loadingBeautyEffects")}</div>
             </div>
           ) : (
             effects.map((effect) => (
@@ -187,7 +189,7 @@ const BeautyEffects = () => {
                   
                   {/* Status Toggle */}
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-gray-400 text-sm">Active</span>
+                    <span className="text-gray-400 text-sm">{t("beautyEffectsPage.active")}</span>
                     <button
                       onClick={() => handleToggleStatus(effect.id, effect.active)}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
@@ -204,7 +206,7 @@ const BeautyEffects = () => {
                   
                   {/* Added Date */}
                   <div className="text-gray-400 text-sm mb-4">
-                    Added on {effect.addedOn}
+                    {t("beautyEffectsPage.addedOn")} {effect.addedOn}
                   </div>
                   
                   {/* Action Buttons */}
@@ -233,25 +235,25 @@ const BeautyEffects = () => {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-            <h2 className="text-xl font-semibold text-white mb-4">Create Beauty Effect</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("beautyEffectsPage.createBeautyEffectTitle")}</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Effect Name</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t("beautyEffectsPage.effectName")}</label>
                 <input
                   type="text"
                   value={newEffect.name || ''}
                   onChange={(e) => setNewEffect(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Enter effect name"
+                  placeholder={t("beautyEffectsPage.enterEffectName")}
                   className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Image URL</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t("beautyEffectsPage.imageUrl")}</label>
                 <input
                   type="text"
                   value={newEffect.image || ''}
                   onChange={(e) => setNewEffect(prev => ({ ...prev, image: e.target.value }))}
-                  placeholder="Enter image URL (optional)"
+                  placeholder={t("beautyEffectsPage.enterImageUrl")}
                   className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
@@ -260,13 +262,13 @@ const BeautyEffects = () => {
                   onClick={() => setShowCreateModal(false)}
                   className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   onClick={handleCreateEffect}
                   className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                 >
-                  Create Effect
+                  {t("beautyEffectsPage.createEffectButton")}
                 </button>
               </div>
             </div>

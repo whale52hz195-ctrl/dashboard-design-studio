@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface Referral {
   id: string;
@@ -19,6 +20,7 @@ interface Referral {
 }
 
 const ReferralSystem = () => {
+  const { t, isRTL } = useLanguage();
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -172,22 +174,22 @@ const ReferralSystem = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Referral System</h1>
+            <h1 className="text-3xl font-bold text-foreground">{t("page.referralSystem")}</h1>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={t("referralSystemPage.search")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 w-64 bg-muted border-border"
+                className={`${isRTL ? "pr-10 pl-4" : "pl-10"} w-64 bg-muted border-border`}
               />
             </div>
             <Button onClick={() => setShowAddModal(true)} className="bg-primary text-primary-foreground hover:bg-primary/90">
               <Plus className="h-4 w-4 mr-2" />
-              Add New Referral
+              {t("referralSystemPage.addNewReferral")}
             </Button>
           </div>
         </div>
@@ -200,7 +202,7 @@ const ReferralSystem = () => {
                 <Users className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Referrals</p>
+                <p className="text-sm text-muted-foreground">{t("referralSystemPage.totalReferrals")}</p>
                 <p className="text-2xl font-bold text-foreground">1,234</p>
               </div>
             </div>
@@ -211,7 +213,7 @@ const ReferralSystem = () => {
                 <CheckCircle className="h-6 w-6 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Completed</p>
+                <p className="text-sm text-muted-foreground">{t("referralSystemPage.completed")}</p>
                 <p className="text-2xl font-bold text-foreground">856</p>
               </div>
             </div>
@@ -222,7 +224,7 @@ const ReferralSystem = () => {
                 <Clock className="h-6 w-6 text-yellow-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Pending</p>
+                <p className="text-sm text-muted-foreground">{t("referralSystemPage.pending")}</p>
                 <p className="text-2xl font-bold text-foreground">378</p>
               </div>
             </div>
@@ -233,7 +235,7 @@ const ReferralSystem = () => {
                 <Calendar className="h-6 w-6 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Rewards</p>
+                <p className="text-sm text-muted-foreground">{t("referralSystemPage.totalRewards")}</p>
                 <p className="text-2xl font-bold text-foreground">45,678</p>
               </div>
             </div>
@@ -246,19 +248,19 @@ const ReferralSystem = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border">
-                  <TableHead className="text-muted-foreground font-medium">TARGET REFERRALS</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">REWARD COINS</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">CREATED AT</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">UPDATED AT</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">STATUS</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">ACTIONS</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("referralSystemPage.targetReferrals")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("referralSystemPage.rewardCoins")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("referralSystemPage.createdAt")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("referralSystemPage.updatedAt")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("common.status")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("common.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
-                      <div className="text-muted-foreground">Loading referral data...</div>
+                      <div className="text-muted-foreground">{t("referralSystemPage.loadingReferralData")}</div>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -303,26 +305,26 @@ const ReferralSystem = () => {
         {showAddModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <Card className="bg-card border-border p-6 w-full max-w-md">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Add New Referral</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">{t("referralSystemPage.addNewReferral")}</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Target Referrals</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">{t("referralSystemPage.targetReferrals")}</label>
                   <Input
                     type="number"
                     value={newReferral.targetReferrals}
                     onChange={(e) => setNewReferral(prev => ({ ...prev, targetReferrals: parseInt(e.target.value) || 0 }))}
                     className="bg-background border-border"
-                    placeholder="Enter target referrals"
+                    placeholder={t("referralSystemPage.enterTargetReferrals")}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Reward Coins</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">{t("referralSystemPage.rewardCoins")}</label>
                   <Input
                     type="number"
                     value={newReferral.rewardCoins}
                     onChange={(e) => setNewReferral(prev => ({ ...prev, rewardCoins: parseInt(e.target.value) || 0 }))}
                     className="bg-background border-border"
-                    placeholder="Enter reward coins"
+                    placeholder={t("referralSystemPage.enterRewardCoins")}
                   />
                 </div>
               </div>
@@ -331,13 +333,13 @@ const ReferralSystem = () => {
                   variant="outline"
                   onClick={() => setShowAddModal(false)}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   onClick={handleAddReferral}
                   className="bg-primary text-primary-foreground"
                 >
-                  Add Referral
+                  {t("referralSystemPage.addReferral")}
                 </Button>
               </div>
             </Card>

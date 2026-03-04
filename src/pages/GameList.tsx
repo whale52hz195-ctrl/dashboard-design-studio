@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/i18n";
 
 // Define Game interface based on Firestore structure
 interface Game {
@@ -34,6 +35,7 @@ interface Game {
 
 const GameList = () => {
   const { toast } = useToast();
+  const { t, isRTL } = useLanguage();
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -200,10 +202,10 @@ const GameList = () => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex-1 max-w-md">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
               <Input 
-                placeholder="Search Game" 
-                className="pl-10 bg-secondary border-border"
+                placeholder={t("gameListPage.searchGame")} 
+                className={`${isRTL ? "pr-10 pl-4" : "pl-10"} bg-secondary border-border`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -218,14 +220,14 @@ const GameList = () => {
 
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Games Management</h1>
-          <p className="text-muted-foreground mt-1">Manage and monitor games</p>
+          <h1 className="text-3xl font-bold text-foreground">{t("gameListPage.gamesManagement")}</h1>
+          <p className="text-muted-foreground mt-1">{t("gameListPage.manageMonitorGames")}</p>
         </div>
 
         {/* Games Table */}
         <Card className="bg-card border-border">
           <div className="p-6 border-b border-border flex items-center justify-between">
-            <div className="text-lg font-semibold text-foreground">Games List</div>
+            <div className="text-lg font-semibold text-foreground">{t("gameListPage.gamesList")}</div>
             <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
               <DialogTrigger asChild>
                 <Button 
@@ -247,21 +249,21 @@ const GameList = () => {
                   }}
                 >
                   <Plus className="h-4 w-4" />
-                  Add Game
+                  {t("gameListPage.addGame")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="bg-card border-border text-foreground max-w-md">
                 <DialogHeader>
                   <DialogTitle className="text-xl font-bold">
-                    {editingGame ? "Edit Game" : "Add New Game"}
+                    {editingGame ? t("gameListPage.editGame") : t("gameListPage.addNewGame")}
                   </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4 mt-4">
                   <div>
-                    <Label htmlFor="gameName" className="text-sm font-medium">Game Name</Label>
+                    <Label htmlFor="gameName" className="text-sm font-medium">{t("gameListPage.gameName")}</Label>
                     <Input
                       id="gameName"
-                      placeholder="Enter game name"
+                      placeholder={t("gameListPage.enterGameName")}
                       className="mt-1 bg-secondary border-border"
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
@@ -269,10 +271,10 @@ const GameList = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="gameLink" className="text-sm font-medium">Game Link</Label>
+                    <Label htmlFor="gameLink" className="text-sm font-medium">{t("gameListPage.gameLink")}</Label>
                     <Input
                       id="gameLink"
-                      placeholder="Enter game link"
+                      placeholder={t("gameListPage.enterGameLink")}
                       className="mt-1 bg-secondary border-border"
                       value={formData.gameLink}
                       onChange={(e) => handleInputChange('gameLink', e.target.value)}
@@ -281,7 +283,7 @@ const GameList = () => {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="minWin" className="text-sm font-medium">Min Win Percent</Label>
+                      <Label htmlFor="minWin" className="text-sm font-medium">{t("gameListPage.minWinPercent")}</Label>
                       <Input
                         id="minWin"
                         placeholder="0"
@@ -292,7 +294,7 @@ const GameList = () => {
                     </div>
                     
                     <div>
-                      <Label htmlFor="maxWin" className="text-sm font-medium">Max Win Percent</Label>
+                      <Label htmlFor="maxWin" className="text-sm font-medium">{t("gameListPage.maxWinPercent")}</Label>
                       <Input
                         id="maxWin"
                         placeholder="100"
@@ -304,7 +306,7 @@ const GameList = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="gameIcon" className="text-sm font-medium">Game Icon</Label>
+                    <Label htmlFor="gameIcon" className="text-sm font-medium">{t("gameListPage.gameIcon")}</Label>
                     <Input
                       id="gameIcon"
                       placeholder="🎰"
@@ -315,10 +317,10 @@ const GameList = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="description" className="text-sm font-medium">Description</Label>
+                    <Label htmlFor="description" className="text-sm font-medium">{t("gameListPage.description")}</Label>
                     <Input
                       id="description"
-                      placeholder="Enter game description"
+                      placeholder={t("gameListPage.enterGameDescription")}
                       className="mt-1 bg-secondary border-border"
                       value={formData.description}
                       onChange={(e) => handleInputChange('description', e.target.value)}
@@ -327,7 +329,7 @@ const GameList = () => {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="minBet" className="text-sm font-medium">Min Bet</Label>
+                      <Label htmlFor="minBet" className="text-sm font-medium">{t("gameListPage.minBet")}</Label>
                       <Input
                         id="minBet"
                         placeholder="0"
@@ -338,7 +340,7 @@ const GameList = () => {
                     </div>
                     
                     <div>
-                      <Label htmlFor="maxBet" className="text-sm font-medium">Max Bet</Label>
+                      <Label htmlFor="maxBet" className="text-sm font-medium">{t("gameListPage.maxBet")}</Label>
                       <Input
                         id="maxBet"
                         placeholder="1000"
@@ -355,13 +357,13 @@ const GameList = () => {
                       className="flex-1 bg-secondary border-border"
                       onClick={() => setIsAddModalOpen(false)}
                     >
-                      Cancel
+                      {t("common.cancel")}
                     </Button>
                     <Button 
                       className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
                       onClick={handleSubmit}
                     >
-                      Submit
+                      {t("common.submit")}
                     </Button>
                   </div>
                 </div>
@@ -373,26 +375,26 @@ const GameList = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border hover:bg-transparent bg-muted/50">
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">IMAGE</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">GAME NAME</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">GAME LINK</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">MIN WIN %</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">MAX WIN %</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">STATUS</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">ACTION</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameListPage.image")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameListPage.gameNameHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameListPage.gameLinkHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameListPage.minWinHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameListPage.maxWinHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("common.status")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("common.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
-                      <div className="text-muted-foreground">Loading games...</div>
+                      <div className="text-muted-foreground">{t("gameListPage.loadingGames")}</div>
                     </TableCell>
                   </TableRow>
                 ) : games.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
-                      <div className="text-muted-foreground">No games found. Click 'Add Game' to create your first game.</div>
+                      <div className="text-muted-foreground">{t("gameListPage.noGamesFound")}</div>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -413,7 +415,7 @@ const GameList = () => {
                             className="text-blue-400 hover:text-blue-300 flex items-center gap-1"
                           >
                             <ExternalLink className="h-3 w-3" />
-                            Link
+                            {t("gameListPage.link")}
                           </a>
                         ) : (
                           <span className="text-muted-foreground">-</span>

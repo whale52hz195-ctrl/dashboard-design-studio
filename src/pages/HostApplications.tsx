@@ -7,17 +7,19 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { mockHostApplications } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 const HostApplications = () => {
+  const { t } = useLanguage();
   const renderTable = (data: typeof mockHostApplications) => (
     <Table>
       <TableHeader>
         <TableRow className="border-border hover:bg-transparent">
-          <TableHead>User</TableHead>
-          <TableHead>Agency</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Application Date</TableHead>
-          <TableHead>Action</TableHead>
+          <TableHead>{t("hostApplications.user")}</TableHead>
+          <TableHead>{t("hostApplications.agency")}</TableHead>
+          <TableHead>{t("hostApplications.status")}</TableHead>
+          <TableHead>{t("hostApplications.applicationDate")}</TableHead>
+          <TableHead>{t("hostApplications.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -50,14 +52,14 @@ const HostApplications = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Host Applications</h1>
+        <h1 className="text-2xl font-bold">{t("hostApplications.title")}</h1>
         <Card className="bg-card border-border">
           <Tabs defaultValue="pending">
             <div className="p-4 border-b border-border">
               <TabsList className="bg-secondary">
-                <TabsTrigger value="pending">Pending ({mockHostApplications.filter(a => a.status === "Pending").length})</TabsTrigger>
-                <TabsTrigger value="approved">Approved ({mockHostApplications.filter(a => a.status === "Approved").length})</TabsTrigger>
-                <TabsTrigger value="rejected">Rejected ({mockHostApplications.filter(a => a.status === "Rejected").length})</TabsTrigger>
+                <TabsTrigger value="pending">{t("hostApplications.pending")} ({mockHostApplications.filter(a => a.status === "Pending").length})</TabsTrigger>
+                <TabsTrigger value="approved">{t("hostApplications.approved")} ({mockHostApplications.filter(a => a.status === "Approved").length})</TabsTrigger>
+                <TabsTrigger value="rejected">{t("hostApplications.rejected")} ({mockHostApplications.filter(a => a.status === "Rejected").length})</TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="pending">{renderTable(mockHostApplications.filter(a => a.status === "Pending"))}</TabsContent>

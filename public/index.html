@@ -14,15 +14,18 @@
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="icon" type="image/png" href="/Ivon.png?v=202602170158" />
-    <link rel="shortcut icon" type="image/png" href="/Ivon.png?v=202602170158" />
-    <script type="module" crossorigin src="/assets/index-BMR6Ibal.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BbJYJWu1.css">
+    
+    <!-- Polyfill for process.env in browser -->
+    <script>
+      window.process = window.process || {};
+      window.process.env = window.process.env || {};
+      window.process.env.NODE_ENV = 'development';
+    </script>
+    <script type="module" crossorigin src="/assets/index-PXc65fHQ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BPul_69T.css">
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>

@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Search, ChevronLeft, ChevronRight, ChevronFirst, ChevronLast, Eye, CheckCircle, XCircle, Clock, FileText, User, Calendar, Check, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { useLanguage } from "@/lib/i18n";
 
 interface VerificationUser {
   uid: string;
@@ -50,6 +51,7 @@ interface VerificationUser {
 }
 
 const UserVerification = () => {
+  const { t, isRTL } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState<VerificationUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,8 +88,8 @@ const UserVerification = () => {
           uid: doc.id,
           verificationStatus,
           idProof: 'National ID',
-          idProofImage: userData.image && userData.image.startsWith('http') ? userData.image : `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`,
-          selfieImage: userData.image && userData.image.startsWith('http') ? userData.image : `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 70}`,
+          idProofImage: userData.image && userData.image.startsWith('http') ? userData.image : `https://picsum.photos/seed/150?img=${Math.floor(Math.random() * 70)}`,
+          selfieImage: userData.image && userData.image.startsWith('http') ? userData.image : `https://picsum.photos/seed/150?img=${Math.floor(Math.random() * 70) + 70}`,
           address: `${userData.country}, City ${Math.floor(Math.random() * 100)}`,
           applicationDate: userData.createdAt,
           reviewDate: verificationStatus !== 'pending' ? new Date().toISOString() : ''
@@ -133,12 +135,12 @@ const UserVerification = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-500/20 text-green-400"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
+        return <Badge className="bg-green-500/20 text-green-400"><CheckCircle className="h-3 w-3 mr-1" />{t("userVerification.approved")}</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-500/20 text-red-400"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
+        return <Badge className="bg-red-500/20 text-red-400"><XCircle className="h-3 w-3 mr-1" />{t("userVerification.rejected")}</Badge>;
       case 'pending':
       default:
-        return <Badge className="bg-yellow-500/20 text-yellow-400"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="bg-yellow-500/20 text-yellow-400"><Clock className="h-3 w-3 mr-1" />{t("userVerification.pending")}</Badge>;
     }
   };
 
@@ -149,10 +151,10 @@ const UserVerification = () => {
       <div className="space-y-4">
         {/* Search Bar */}
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
           <Input
-            placeholder="Search users..."
-            className="pl-10 bg-secondary border-border"
+            placeholder={t("userVerification.searchUsers")}
+            className={`${isRTL ? "pr-10" : "pl-10"} bg-secondary border-border`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -164,28 +166,28 @@ const UserVerification = () => {
           <Table>
             <TableHeader>
               <TableRow className="border-border hover:bg-transparent bg-muted/50">
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">User</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">uniqueId</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">idProof</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">idProof Image</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">selfie Image</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">Status</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">address</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">Application Date</TableHead>
-                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">Review Date</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.user")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.uniqueId")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.idProof")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.idProofImage")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.selfieImage")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.status")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.address")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.applicationDate")}</TableHead>
+                <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">{t("userVerification.reviewDate")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={9} className="text-center py-8">
-                    <div className="text-muted-foreground">Loading users...</div>
+                    <div className="text-muted-foreground">{t("userVerification.loadingUsers")}</div>
                   </TableCell>
                 </TableRow>
               ) : filteredUsers.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={9} className="text-center py-8">
-                    <div className="text-muted-foreground">No {status} users found</div>
+                    <div className="text-muted-foreground">{t("userVerification.noStatusUsers", { status })}</div>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -218,7 +220,7 @@ const UserVerification = () => {
                           alt="ID Proof" 
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.currentTarget.src = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`;
+                            e.currentTarget.src = `https://picsum.photos/seed/150?img=${Math.floor(Math.random() * 70)}`;
                           }}
                         />
                       </div>
@@ -230,7 +232,7 @@ const UserVerification = () => {
                           alt="Selfie" 
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.currentTarget.src = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 70}`;
+                            e.currentTarget.src = `https://picsum.photos/seed/150?img=${Math.floor(Math.random() * 70) + 70}`;
                           }}
                         />
                       </div>
@@ -257,7 +259,7 @@ const UserVerification = () => {
         {/* Pagination */}
         <div className="p-4 border-t border-border flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Showing 1 to {filteredUsers.length} of {filteredUsers.length} entries
+            {t("userVerification.showing", { start: 1, end: filteredUsers.length, total: filteredUsers.length })}
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" className="bg-secondary border-border">
@@ -294,16 +296,16 @@ const UserVerification = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">User Verification</h1>
-        <p className="text-muted-foreground">Review and verify user accounts</p>
+        <h1 className="text-2xl font-bold">{t("userVerification.title")}</h1>
+        <p className="text-muted-foreground">{t("userVerification.subtitle")}</p>
         
         <Card className="bg-card border-border">
           <Tabs defaultValue="pending" value={activeTab} onValueChange={handleTabChange}>
             <div className="p-4 border-b border-border">
               <TabsList className="bg-secondary">
-                <TabsTrigger value="pending">Pending ({pendingCount})</TabsTrigger>
-                <TabsTrigger value="approved">Approved ({approvedCount})</TabsTrigger>
-                <TabsTrigger value="rejected">Rejected ({rejectedCount})</TabsTrigger>
+                <TabsTrigger value="pending">{t("userVerification.pending")} ({pendingCount})</TabsTrigger>
+                <TabsTrigger value="approved">{t("userVerification.approved")} ({approvedCount})</TabsTrigger>
+                <TabsTrigger value="rejected">{t("userVerification.rejected")} ({rejectedCount})</TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="pending">{renderTable('pending')}</TabsContent>

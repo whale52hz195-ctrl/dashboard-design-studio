@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy, limit, startAfter } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/i18n";
 
 // Define Game History interface
 interface GameHistory {
@@ -24,6 +25,7 @@ interface GameHistory {
 
 const GameHistory = () => {
   const { toast } = useToast();
+  const { t, isRTL } = useLanguage();
   const [gameHistory, setGameHistory] = useState<GameHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("teen-patti");
@@ -160,11 +162,11 @@ const GameHistory = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Game History</h1>
-            <p className="text-muted-foreground mt-1">View and manage all game transactions</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("page.gameHistory")}</h1>
+            <p className="text-muted-foreground mt-1">{t("gameHistoryPage.viewManageTransactions")}</p>
           </div>
           <div className="bg-card border-border border px-4 py-2 rounded-lg">
-            <span className="text-sm text-muted-foreground">Admin Total Coin: </span>
+            <span className="text-sm text-muted-foreground">{t("gameHistoryPage.adminTotalCoin")}: </span>
             <span className="text-lg font-bold text-foreground">{adminTotalCoin.toLocaleString()}</span>
           </div>
         </div>
@@ -182,7 +184,7 @@ const GameHistory = () => {
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
               >
-                Teen Patti
+                {t("gameHistoryPage.teenPatti")}
               </button>
               <button
                 onClick={() => handleTabChange("casino")}
@@ -192,7 +194,7 @@ const GameHistory = () => {
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
               >
-                Casino
+                {t("gameHistoryPage.casino")}
               </button>
               <button
                 onClick={() => handleTabChange("ferry-wheel")}
@@ -202,7 +204,7 @@ const GameHistory = () => {
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
               >
-                Ferry Wheel
+                {t("gameHistoryPage.ferryWheel")}
               </button>
             </div>
 
@@ -214,7 +216,7 @@ const GameHistory = () => {
                 onClick={handleResetCoin}
               >
                 <RotateCcw className="h-4 w-4" />
-                Reset Coin
+                {t("gameHistoryPage.resetCoin")}
               </Button>
               <Button 
                 variant="outline" 
@@ -222,7 +224,7 @@ const GameHistory = () => {
                 onClick={handleFilterByDate}
               >
                 <Filter className="h-4 w-4" />
-                Filter By Date
+                {t("gameHistoryPage.filterByDate")}
               </Button>
             </div>
           </div>
@@ -234,25 +236,25 @@ const GameHistory = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border hover:bg-transparent bg-muted/50">
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">NO</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">ADMIN COIN</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">TOTAL BET COIN</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">WINNER COIN</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">WIN / LOSE</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">INFO</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameHistoryPage.no")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameHistoryPage.adminCoin")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameHistoryPage.totalBetCoin")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameHistoryPage.winnerCoin")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameHistoryPage.winLose")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("gameHistoryPage.info")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
-                      <div className="text-muted-foreground">Loading game history...</div>
+                      <div className="text-muted-foreground">{t("gameHistoryPage.loadingGameHistory")}</div>
                     </TableCell>
                   </TableRow>
                 ) : gameHistory.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
-                      <div className="text-muted-foreground">No game history found</div>
+                      <div className="text-muted-foreground">{t("gameHistoryPage.noGameHistoryFound")}</div>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -297,7 +299,7 @@ const GameHistory = () => {
           {/* Pagination */}
           <div className="p-4 border-t border-border flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              Showing {startIndex} to {endIndex} of {totalEntries} entries
+              {t("gameHistoryPage.showing", { start: startIndex, end: endIndex, total: totalEntries })}
             </div>
             <div className="flex items-center gap-2">
               <Button 

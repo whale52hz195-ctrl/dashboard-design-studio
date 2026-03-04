@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, query, orderBy, where, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -23,6 +24,7 @@ interface Report {
 }
 
 const ReportManagement = () => {
+  const { t, isRTL } = useLanguage();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filterType, setFilterType] = useState<'User' | 'Stream' | 'Post' | 'All'>('All');
@@ -159,18 +161,18 @@ const ReportManagement = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Report Management</h1>
-            <p className="text-muted-foreground mt-1">Manage and review user reports</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("page.reportManagement")}</h1>
+            <p className="text-muted-foreground mt-1">{t("reportManagementPage.manageReviewReports")}</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={t("reportManagementPage.search")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-64 bg-muted border-border"
+                className={`${isRTL ? "pr-10 pl-4" : "pl-10"} w-64 bg-muted border-border`}
               />
             </div>
             
@@ -182,7 +184,7 @@ const ReportManagement = () => {
                 className="flex items-center gap-2"
               >
                 <Users className="h-4 w-4" />
-                User Reports
+                {t("reportManagementPage.userReports")}
               </Button>
               <Button
                 variant={filterType === 'Stream' ? 'default' : 'outline'}
@@ -190,7 +192,7 @@ const ReportManagement = () => {
                 className="flex items-center gap-2"
               >
                 <Video className="h-4 w-4" />
-                Video Reports
+                {t("reportManagementPage.videoReports")}
               </Button>
               <Button
                 variant={filterType === 'Post' ? 'default' : 'outline'}
@@ -198,7 +200,7 @@ const ReportManagement = () => {
                 className="flex items-center gap-2"
               >
                 <FileText className="h-4 w-4" />
-                Post Reports
+                {t("reportManagementPage.postReports")}
               </Button>
             </div>
 
@@ -207,29 +209,29 @@ const ReportManagement = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex items-center gap-2">
                   <Filter className="h-4 w-4" />
-                  {filterStatus === 'All' ? 'All Status' : filterStatus}
+                  {filterStatus === 'All' ? t("reportManagementPage.allStatus") : t(`reportManagementPage.${filterStatus.toLowerCase()}`)}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setFilterStatus('All')}>
-                  All Status
+                  {t("reportManagementPage.allStatus")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterStatus('Pending')}>
-                  Pending
+                  {t("reportManagementPage.pending")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterStatus('Resolved')}>
-                  Resolved
+                  {t("reportManagementPage.resolved")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterStatus('Dismissed')}>
-                  Dismissed
+                  {t("reportManagementPage.dismissed")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             <Button variant="outline" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              Filter by Date
+              {t("reportManagementPage.filterByDate")}
             </Button>
           </div>
         </div>
@@ -240,24 +242,24 @@ const ReportManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border">
-                  <TableHead className="text-muted-foreground font-medium">REPORTER</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">REPORT REASON</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">REPORTED USER</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">DATE</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">ACTIONS</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("reportManagementPage.reporter")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("reportManagementPage.reportReason")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("reportManagementPage.reportedUser")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("reportManagementPage.date")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-medium ${isRTL ? "text-right" : "text-left"}`}>{t("common.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-8">
-                      <div className="text-muted-foreground">Loading report data...</div>
+                      <div className="text-muted-foreground">{t("reportManagementPage.loadingReports")}</div>
                     </TableCell>
                   </TableRow>
                 ) : currentItems.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-8">
-                      <div className="text-muted-foreground">No Pending Reports</div>
+                      <div className="text-muted-foreground">{t("reportManagementPage.noPendingReports")}</div>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -287,28 +289,28 @@ const ReportManagement = () => {
           {/* Pagination */}
           <div className="flex items-center justify-between p-4 border-t border-border">
             <div className="text-sm text-muted-foreground">
-              Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredReports.length)} of {filteredReports.length} entries
+              {t("reportManagementPage.showing", { start: indexOfFirstItem + 1, end: Math.min(indexOfLastItem, filteredReports.length), total: filteredReports.length })}
             </div>
             <div className="flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm">
-                    Showing {itemsPerPage}
+                    {t("reportManagementPage.showing", { count: itemsPerPage })}
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => setItemsPerPage(10)}>
-                    Showing 10
+                    {t("reportManagementPage.showing", { count: 10 })}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setItemsPerPage(25)}>
-                    Showing 25
+                    {t("reportManagementPage.showing", { count: 25 })}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setItemsPerPage(50)}>
-                    Showing 50
+                    {t("reportManagementPage.showing", { count: 50 })}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setItemsPerPage(100)}>
-                    Showing 100
+                    {t("reportManagementPage.showing", { count: 100 })}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -319,7 +321,7 @@ const ReportManagement = () => {
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
-                Previous
+                {t("reportManagementPage.previous")}
               </Button>
               <Button
                 variant="outline"
@@ -327,7 +329,7 @@ const ReportManagement = () => {
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >
-                Next
+                {t("reportManagementPage.next")}
               </Button>
             </div>
           </div>

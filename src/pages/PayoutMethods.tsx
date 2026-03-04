@@ -9,9 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Search, Plus, Pencil, Trash2, Upload, X, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getPayoutMethods, createPayoutMethod, updatePayoutMethod, deletePayoutMethod, PayoutMethod } from "@/lib/firestoreService";
+import { useLanguage } from "@/lib/i18n";
 
 export default function PayoutMethods() {
   const { toast } = useToast();
+  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [payoutMethods, setPayoutMethods] = useState<PayoutMethod[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -253,8 +255,8 @@ export default function PayoutMethods() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Payout Methods</h1>
-            <p className="text-gray-400 text-sm mt-1">Configure and manage payout options</p>
+            <h1 className="text-2xl font-bold text-white">{t("page.payoutMethods")}</h1>
+            <p className="text-gray-400 text-sm mt-1">{t("payoutMethodsPage.configureManageOptions")}</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -282,7 +284,7 @@ export default function PayoutMethods() {
               className="bg-purple-600 hover:bg-purple-700 text-white gap-2"
             >
               <Plus className="h-4 w-4" />
-              Add New Method
+              {t("payoutMethodsPage.addNewMethod")}
             </Button>
           </div>
         </div>
@@ -290,7 +292,7 @@ export default function PayoutMethods() {
         {loading && (
           <div className="flex items-center justify-center h-64">
             <RefreshCw className="h-8 w-8 text-purple-500 animate-spin" />
-            <span className="ml-2 text-gray-400">Loading payout methods...</span>
+            <span className="ml-2 text-gray-400">{t("payoutMethodsPage.loadingPayoutMethods")}</span>
           </div>
         )}
 
@@ -298,12 +300,12 @@ export default function PayoutMethods() {
           <>
             {/* Search */}
             <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500`} />
               <Input
-                placeholder="Search Payout Method"
+                placeholder={t("payoutMethodsPage.searchPayoutMethod")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-[#1a1a2e] border-gray-700 text-white placeholder:text-gray-500"
+                className={`${isRTL ? "pr-10 pl-4" : "pl-10"} bg-[#1a1a2e] border-gray-700 text-white placeholder:text-gray-500`}
               />
             </div>
 
@@ -312,11 +314,11 @@ export default function PayoutMethods() {
           <Table>
             <TableHeader>
               <TableRow className="border-gray-700 hover:bg-transparent">
-                <TableHead className="text-gray-400">IMAGE</TableHead>
-                <TableHead className="text-gray-400">NAME</TableHead>
-                <TableHead className="text-gray-400">REQUIRED DETAILS</TableHead>
-                <TableHead className="text-gray-400">STATUS</TableHead>
-                <TableHead className="text-gray-400 text-right">ACTIONS</TableHead>
+                <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutMethodsPage.image")}</TableHead>
+                <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutMethodsPage.name")}</TableHead>
+                <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutMethodsPage.requiredDetails")}</TableHead>
+                <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("common.status")}</TableHead>
+                <TableHead className={`text-gray-400 ${isRTL ? "text-left" : "text-right"}`}>{t("common.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -388,38 +390,38 @@ export default function PayoutMethods() {
         <Dialog open={addDialog} onOpenChange={setAddDialog}>
           <DialogContent className="bg-[#1a1a2e] border-gray-700 text-white max-w-md">
             <DialogHeader>
-              <DialogTitle>Add New Payout Method</DialogTitle>
+              <DialogTitle>{t("payoutMethodsPage.addNewPayoutMethod")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="methodName">Payout Method Name</Label>
+                <Label htmlFor="methodName">{t("payoutMethodsPage.payoutMethodName")}</Label>
                 <Input
                   id="methodName"
                   value={methodName}
                   onChange={(e) => setMethodName(e.target.value)}
-                  placeholder="Enter method name"
+                  placeholder={t("payoutMethodsPage.enterMethodName")}
                   className="bg-[#0f0f23] border-gray-600 text-white placeholder:text-gray-500 mt-1"
                 />
               </div>
 
               <div>
-                <Label>Add Detail Field</Label>
+                <Label>{t("payoutMethodsPage.addDetailField")}</Label>
                 <div className="flex gap-2 mt-1">
                   <Input
                     value={detailField}
                     onChange={(e) => setDetailField(e.target.value)}
-                    placeholder="Enter detail field name"
+                    placeholder={t("payoutMethodsPage.enterDetailFieldName")}
                     className="bg-[#0f0f23] border-gray-600 text-white placeholder:text-gray-500 flex-1"
                   />
                   <Button
                     onClick={handleAddDetailField}
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                   >
-                    Add
+                    {t("common.add")}
                   </Button>
                 </div>
                 {detailFields.length === 0 && (
-                  <p className="text-gray-500 text-xs mt-2">No detail fields added yet</p>
+                  <p className="text-gray-500 text-xs mt-2">{t("payoutMethodsPage.noDetailFieldsAdded")}</p>
                 )}
                 {detailFields.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -440,7 +442,7 @@ export default function PayoutMethods() {
               </div>
 
               <div>
-                <Label>Upload Image</Label>
+                <Label>{t("payoutMethodsPage.uploadImage")}</Label>
                 <div className="border-2 border-dashed border-gray-600 rounded-lg p-4 mt-1">
                   <div className="flex flex-col items-center gap-2">
                     <input
@@ -455,7 +457,7 @@ export default function PayoutMethods() {
                       className="cursor-pointer flex flex-col items-center gap-2 hover:text-purple-400 transition-colors"
                     >
                       <Upload className="h-6 w-6 text-gray-500" />
-                      <p className="text-gray-500 text-sm">Accepted formats: image/*</p>
+                      <p className="text-gray-500 text-sm">{t("payoutMethodsPage.acceptedFormats")}</p>
                       {methodImage && (
                         <div className="mt-2">
                           <img
@@ -479,13 +481,13 @@ export default function PayoutMethods() {
                 }}
                 className="border-gray-600 text-gray-300 hover:bg-gray-700"
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 onClick={handleAddMethod}
                 className="bg-purple-600 hover:bg-purple-700 text-white"
               >
-                Submit
+                {t("common.submit")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -495,38 +497,38 @@ export default function PayoutMethods() {
         <Dialog open={editDialog} onOpenChange={setEditDialog}>
           <DialogContent className="bg-[#1a1a2e] border-gray-700 text-white max-w-md">
             <DialogHeader>
-              <DialogTitle>Edit Payout Method</DialogTitle>
+              <DialogTitle>{t("payoutMethodsPage.editPayoutMethod")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="editMethodName">Payout Method Name</Label>
+                <Label htmlFor="editMethodName">{t("payoutMethodsPage.payoutMethodName")}</Label>
                 <Input
                   id="editMethodName"
                   value={methodName}
                   onChange={(e) => setMethodName(e.target.value)}
-                  placeholder="Enter method name"
+                  placeholder={t("payoutMethodsPage.enterMethodName")}
                   className="bg-[#0f0f23] border-gray-600 text-white placeholder:text-gray-500 mt-1"
                 />
               </div>
 
               <div>
-                <Label>Add Detail Field</Label>
+                <Label>{t("payoutMethodsPage.addDetailField")}</Label>
                 <div className="flex gap-2 mt-1">
                   <Input
                     value={detailField}
                     onChange={(e) => setDetailField(e.target.value)}
-                    placeholder="Enter detail field name"
+                    placeholder={t("payoutMethodsPage.enterDetailFieldName")}
                     className="bg-[#0f0f23] border-gray-600 text-white placeholder:text-gray-500 flex-1"
                   />
                   <Button
                     onClick={handleAddDetailField}
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                   >
-                    Add
+                    {t("common.add")}
                   </Button>
                 </div>
                 {detailFields.length === 0 && (
-                  <p className="text-gray-500 text-xs mt-2">No detail fields added yet</p>
+                  <p className="text-gray-500 text-xs mt-2">{t("payoutMethodsPage.noDetailFieldsAdded")}</p>
                 )}
                 {detailFields.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -547,7 +549,7 @@ export default function PayoutMethods() {
               </div>
 
               <div>
-                <Label>Upload Image</Label>
+                <Label>{t("payoutMethodsPage.uploadImage")}</Label>
                 <div className="border-2 border-dashed border-gray-600 rounded-lg p-4 mt-1">
                   <div className="flex flex-col items-center gap-2">
                     <input
@@ -562,7 +564,7 @@ export default function PayoutMethods() {
                       className="cursor-pointer flex flex-col items-center gap-2 hover:text-purple-400 transition-colors"
                     >
                       <Upload className="h-6 w-6 text-gray-500" />
-                      <p className="text-gray-500 text-sm">Accepted formats: image/*</p>
+                      <p className="text-gray-500 text-sm">{t("payoutMethodsPage.acceptedFormats")}</p>
                       {(methodImage || editingMethod?.image) && (
                         <div className="mt-2">
                           <img
@@ -586,13 +588,13 @@ export default function PayoutMethods() {
                 }}
                 className="border-gray-600 text-gray-300 hover:bg-gray-700"
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 onClick={handleEditMethod}
                 className="bg-purple-600 hover:bg-purple-700 text-white"
               >
-                Submit
+                {t("common.submit")}
               </Button>
             </DialogFooter>
           </DialogContent>

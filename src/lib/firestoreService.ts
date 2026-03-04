@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, orderBy, limit, startAfter, doc, getDoc, updateDoc, arrayUnion, arrayRemove, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, limit, startAfter, doc, getDoc, updateDoc, arrayUnion, arrayRemove, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import { mockUsersData } from '@/data/mockUsersData';
 
@@ -959,13 +959,13 @@ export interface TopContributor {
 
 export const getTopContributors = async (): Promise<TopContributor[]> => {
   if (!isFirebaseConfigured()) {
-    // Return mock top contributors
+    // Return mock top contributors with reliable image URLs
     return [
-      { name: "Omar Youssef", avatar: "https://i.pravatar.cc/40?img=8", coins: 120000 },
-      { name: "Sara Ali", avatar: "https://i.pravatar.cc/40?img=5", coins: 89500 },
-      { name: "Layla Ibrahim", avatar: "https://i.pravatar.cc/40?img=10", coins: 67800 },
-      { name: "Mohamed Khaled", avatar: "https://i.pravatar.cc/40?img=3", coins: 45200 },
-      { name: "Nadia Samir", avatar: "https://i.pravatar.cc/40?img=16", coins: 34500 },
+      { name: "Omar Youssef", avatar: "https://picsum.photos/seed/omar/40/40.jpg", coins: 120000 },
+      { name: "Sara Ali", avatar: "https://picsum.photos/seed/sara/40/40.jpg", coins: 89500 },
+      { name: "Layla Ibrahim", avatar: "https://picsum.photos/seed/layla/40/40.jpg", coins: 67800 },
+      { name: "Mohamed Khaled", avatar: "https://picsum.photos/seed/mohamed/40/40.jpg", coins: 45200 },
+      { name: "Nadia Samir", avatar: "https://picsum.photos/seed/nadia/40/40.jpg", coins: 34500 },
     ];
   }
 
@@ -978,8 +978,8 @@ export const getTopContributors = async (): Promise<TopContributor[]> => {
     snapshot.forEach((doc) => {
       const user = doc.data() as User;
       topContributors.push({
-        name: user.name,
-        avatar: user.image,
+        name: user.name || 'Unknown User',
+        avatar: user.image || `https://picsum.photos/seed/${user.uid}/40/40.jpg`,
         coins: user.coins || 0,
       });
     });
@@ -989,11 +989,153 @@ export const getTopContributors = async (): Promise<TopContributor[]> => {
     console.error('Error getting top contributors:', error);
     // Fallback to mock data
     return [
-      { name: "Omar Youssef", avatar: "https://i.pravatar.cc/40?img=8", coins: 120000 },
-      { name: "Sara Ali", avatar: "https://i.pravatar.cc/40?img=5", coins: 89500 },
-      { name: "Layla Ibrahim", avatar: "https://i.pravatar.cc/40?img=10", coins: 67800 },
-      { name: "Mohamed Khaled", avatar: "https://i.pravatar.cc/40?img=3", coins: 45200 },
-      { name: "Nadia Samir", avatar: "https://i.pravatar.cc/40?img=16", coins: 34500 },
+      { name: "Omar Youssef", avatar: "https://picsum.photos/seed/omar/40/40.jpg", coins: 120000 },
+      { name: "Sara Ali", avatar: "https://picsum.photos/seed/sara/40/40.jpg", coins: 89500 },
+      { name: "Layla Ibrahim", avatar: "https://picsum.photos/seed/layla/40/40.jpg", coins: 67800 },
+      { name: "Mohamed Khaled", avatar: "https://picsum.photos/seed/mohamed/40/40.jpg", coins: 45200 },
+      { name: "Nadia Samir", avatar: "https://picsum.photos/seed/nadia/40/40.jpg", coins: 34500 },
     ];
+  }
+};
+
+// API Configuration Management Functions
+export const getAPIConfigs = async (): Promise<Record<string, any>> => {
+  if (!isFirebaseConfigured()) {
+    // Return mock API configurations for development
+    return {
+      agora: {
+        name: 'agora',
+        config: {
+          appId: 'your_agora_app_id_here',
+          certificate: 'your_agora_certificate_here',
+        },
+        isActive: true,
+        description: 'Agora Video Calling & Live Streaming',
+        category: 'communication',
+        lastUpdated: new Date(),
+      },
+      stripe: {
+        name: 'stripe',
+        config: {
+          testSecretKey: 'sk_test_your_stripe_secret_here',
+          testPublicKey: 'pk_test_your_stripe_public_here',
+          liveSecretKey: '',
+          livePublicKey: '',
+          isTestMode: true,
+        },
+        isActive: true,
+        description: 'Stripe Payment Processing',
+        category: 'payment',
+        lastUpdated: new Date(),
+      },
+      razorpay: {
+        name: 'razorpay',
+        config: {
+          testKey: 'your_razorpay_key_here',
+          liveKey: '',
+          isTestMode: true,
+        },
+        isActive: true,
+        description: 'Razorpay Payment Processing (India)',
+        category: 'payment',
+        lastUpdated: new Date(),
+      },
+      flutterWave: {
+        name: 'flutterWave',
+        config: {
+          publicKey: 'your_flutter_wave_id_here',
+          secretKey: '',
+          encryptionKey: '',
+          isTestMode: true,
+        },
+        isActive: true,
+        description: 'Flutter Wave Payment Processing (Africa)',
+        category: 'payment',
+        lastUpdated: new Date(),
+      },
+      deepAR: {
+        name: 'deepAR',
+        config: {
+          androidLicenseKey: 'your_android_license_here',
+          iosLicenseKey: 'your_ios_license_here',
+        },
+        isActive: true,
+        description: 'Deep AR Effects & Filters',
+        category: 'ar_effects',
+        lastUpdated: new Date(),
+      },
+      app: {
+        name: 'app',
+        config: {
+          defaultCurrencySymbol: '$',
+          defaultCurrencyCode: 'USD',
+          defaultCountryCode: 'USA',
+        },
+        isActive: true,
+        description: 'App Configuration',
+        category: 'app_config',
+        lastUpdated: new Date(),
+      },
+    };
+  }
+
+  try {
+    const apisCollection = collection(db, 'APIs');
+    const snapshot = await getDocs(apisCollection);
+    
+    const configs: Record<string, any> = {};
+    
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      configs[doc.id] = {
+        name: doc.id,
+        config: data.config || {},
+        isActive: data.isActive ?? true,
+        description: data.description || '',
+        category: data.category || 'other',
+        lastUpdated: data.lastUpdated?.toDate() || new Date(),
+      };
+    });
+    
+    return configs;
+  } catch (error) {
+    console.error('Error getting API configs:', error);
+    throw error;
+  }
+};
+
+export const updateAPIConfig = async (apiName: string, config: Record<string, any>): Promise<void> => {
+  if (!isFirebaseConfigured()) {
+    console.log('Firebase not configured, skipping API config update');
+    return;
+  }
+
+  try {
+    const apiDoc = doc(db, 'APIs', apiName);
+    await updateDoc(apiDoc, {
+      config: config,
+      lastUpdated: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error updating API config:', error);
+    throw error;
+  }
+};
+
+export const toggleAPIStatus = async (apiName: string, isActive: boolean): Promise<void> => {
+  if (!isFirebaseConfigured()) {
+    console.log('Firebase not configured, skipping API status toggle');
+    return;
+  }
+
+  try {
+    const apiDoc = doc(db, 'APIs', apiName);
+    await updateDoc(apiDoc, {
+      isActive: isActive,
+      lastUpdated: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error toggling API status:', error);
+    throw error;
   }
 };

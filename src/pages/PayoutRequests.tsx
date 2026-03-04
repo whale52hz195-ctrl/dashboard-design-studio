@@ -6,9 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getPayoutRequests, updatePayoutRequest, PayoutRequest } from "@/lib/firestoreService";
+import { useLanguage } from "@/lib/i18n";
 
 export default function PayoutRequests() {
   const { toast } = useToast();
+  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [payoutRequests, setPayoutRequests] = useState<PayoutRequest[]>([]);
   const [filter, setFilter] = useState("pending");
@@ -147,8 +149,8 @@ export default function PayoutRequests() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Payout Requests</h1>
-            <p className="text-gray-400 text-sm mt-1">Review and process payout requests</p>
+            <h1 className="text-2xl font-bold text-white">{t("page.payoutRequests")}</h1>
+            <p className="text-gray-400 text-sm mt-1">{t("payoutRequestsPage.reviewProcessRequests")}</p>
           </div>
           <Button
             onClick={handleRefresh}
@@ -168,10 +170,10 @@ export default function PayoutRequests() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-[#1a1a2e] border-gray-700">
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="pending">{t("payoutRequestsPage.pending")}</SelectItem>
+                <SelectItem value="approved">{t("payoutRequestsPage.approved")}</SelectItem>
+                <SelectItem value="rejected">{t("payoutRequestsPage.rejected")}</SelectItem>
+                <SelectItem value="all">{t("common.all")}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -201,7 +203,7 @@ export default function PayoutRequests() {
                   : "text-gray-400 hover:text-white hover:bg-transparent"
               }`}
             >
-              Agency
+              {t("payoutRequestsPage.agency")}
             </Button>
             <Button
               variant={userType === "host" ? "default" : "ghost"}
@@ -213,7 +215,7 @@ export default function PayoutRequests() {
                   : "text-gray-400 hover:text-white hover:bg-transparent"
               }`}
             >
-              Host
+              {t("payoutRequestsPage.host")}
             </Button>
             <Button
               variant={userType === "user" ? "default" : "ghost"}
@@ -225,7 +227,7 @@ export default function PayoutRequests() {
                   : "text-gray-400 hover:text-white hover:bg-transparent"
               }`}
             >
-              User
+              {t("payoutRequestsPage.user")}
             </Button>
           </div>
         </div>
@@ -233,7 +235,7 @@ export default function PayoutRequests() {
         {loading && (
           <div className="flex items-center justify-center h-64">
             <RefreshCw className="h-8 w-8 text-purple-500 animate-spin" />
-            <span className="ml-2 text-gray-400">Loading payout requests...</span>
+            <span className="ml-2 text-gray-400">{t("payoutRequestsPage.loadingPayoutRequests")}</span>
           </div>
         )}
 
@@ -244,21 +246,21 @@ export default function PayoutRequests() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-gray-700 hover:bg-transparent">
-                    <TableHead className="text-gray-400">REQUEST ID</TableHead>
-                    <TableHead className="text-gray-400">AGENCY</TableHead>
-                    <TableHead className="text-gray-400">COINS</TableHead>
-                    <TableHead className="text-gray-400">AMOUNT ($)</TableHead>
-                    <TableHead className="text-gray-400">PAYMENT METHOD</TableHead>
-                    <TableHead className="text-gray-400">PAYMENT DETAILS</TableHead>
-                    <TableHead className="text-gray-400">REQUEST DATE</TableHead>
-                    <TableHead className="text-gray-400 text-right">ACTIONS</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutRequestsPage.requestId")}</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutRequestsPage.agency")}</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutRequestsPage.coins")}</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutRequestsPage.amount")}</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutRequestsPage.paymentMethod")}</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutRequestsPage.paymentDetails")}</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>{t("payoutRequestsPage.requestDate")}</TableHead>
+                    <TableHead className={`text-gray-400 ${isRTL ? "text-left" : "text-right"}`}>{t("common.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {paginatedRequests.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={8} className="text-center text-gray-500 py-8">
-                        No payout requests found
+                        {t("payoutRequestsPage.noPayoutRequestsFound")}
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -303,7 +305,7 @@ export default function PayoutRequests() {
                                   onClick={() => handleApprove(request.requestId)}
                                   className="bg-green-600 hover:bg-green-700 text-white"
                                 >
-                                  Approve
+                                  {t("payoutRequestsPage.approve")}
                                 </Button>
                                 <Button
                                   size="sm"
@@ -311,15 +313,15 @@ export default function PayoutRequests() {
                                   onClick={() => handleReject(request.requestId)}
                                   className="bg-red-600 hover:bg-red-700 text-white"
                                 >
-                                  Reject
+                                  {t("payoutRequestsPage.reject")}
                                 </Button>
                               </>
                             )}
                             {request.status === 'approved' && (
-                              <span className="text-green-400 text-sm">Approved</span>
+                              <span className="text-green-400 text-sm">{t("payoutRequestsPage.approved")}</span>
                             )}
                             {request.status === 'rejected' && (
-                              <span className="text-red-400 text-sm">Rejected</span>
+                              <span className="text-red-400 text-sm">{t("payoutRequestsPage.rejected")}</span>
                             )}
                           </div>
                         </TableCell>
@@ -333,7 +335,7 @@ export default function PayoutRequests() {
             {/* Pagination */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-400">
-                Showing {startIndex + 1} to {endIndex} of {filteredRequests.length} entries
+                {t("payoutRequestsPage.showing", { start: startIndex + 1, end: endIndex, total: filteredRequests.length })}
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -346,7 +348,7 @@ export default function PayoutRequests() {
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <span className="text-sm text-gray-400 px-2">
-                  Page {currentPage} of {totalPages || 1}
+                  {t("payoutRequestsPage.page", { current: currentPage, total: totalPages || 1 })}
                 </span>
                 <Button
                   variant="outline"

@@ -23,3 +23,15 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Firebase and service account credentials
+serviceAccountKey.json
+*.json
+firebaseConfig.js
+
+# Scripts with sensitive data
+scripts/get-firebase-config.js
+scripts/upload-games.js
+scripts/upload-payout-methods.js
+scripts/upload-payout-requests.js
+scripts/upload-to-firestore.js

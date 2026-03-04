@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy, limit, doc, updateDoc, addDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { toast } from "sonner";
+import { useLanguage } from "@/lib/i18n";
 
 // Define User interface based on Firestore structure
 interface User {
@@ -50,6 +51,7 @@ interface User {
 }
 
 const CoinTraders = () => {
+  const { t, isRTL } = useLanguage();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -359,10 +361,10 @@ const CoinTraders = () => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex-1 max-w-md">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
               <Input 
-                placeholder="Search Coin Trader" 
-                className="pl-10 bg-secondary border-border"
+                placeholder={t("coinTraders.searchCoinTrader")} 
+                className={`${isRTL ? "pr-10" : "pl-10"} bg-secondary border-border`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -373,7 +375,7 @@ const CoinTraders = () => {
               <Settings className="h-5 w-5" />
             </Button>
             <Avatar className="h-8 w-8">
-              <AvatarImage src="https://i.pravatar.cc/32?img=1" />
+              <AvatarImage src="https://picsum.photos/seed/32?img=1" />
               <AvatarFallback>A</AvatarFallback>
             </Avatar>
           </div>
@@ -381,8 +383,8 @@ const CoinTraders = () => {
 
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Coin Traders</h1>
-          <p className="text-muted-foreground mt-1">Manage and monitor coin traders</p>
+          <h1 className="text-3xl font-bold text-foreground">{t("coinTraders.title")}</h1>
+          <p className="text-muted-foreground mt-1">{t("coinTraders.subtitle")}</p>
         </div>
 
         {/* Stats Cards */}
@@ -390,7 +392,7 @@ const CoinTraders = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Traders</p>
+                <p className="text-sm text-muted-foreground">{t("coinTraders.totalTraders")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{totalUsers}</p>
               </div>
               <div className="h-12 w-12 rounded-lg bg-green-500/20 flex items-center justify-center">
@@ -402,7 +404,7 @@ const CoinTraders = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Coins</p>
+                <p className="text-sm text-muted-foreground">{t("coinTraders.totalCoins")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">
                   {users.reduce((sum, user) => sum + (user.coin || 0), 0)}
                 </p>
@@ -416,7 +418,7 @@ const CoinTraders = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Spent Coins</p>
+                <p className="text-sm text-muted-foreground">{t("coinTraders.spentCoins")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">
                   {users.reduce((sum, user) => sum + (user.coins || 0), 0)}
                 </p>
@@ -430,7 +432,7 @@ const CoinTraders = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active Traders</p>
+                <p className="text-sm text-muted-foreground">{t("coinTraders.activeTraders")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">
                   {users.filter(user => !user.isProfilePicBanned).length}
                 </p>
@@ -448,10 +450,10 @@ const CoinTraders = () => {
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex-1 max-w-sm">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
                   <Input 
-                    placeholder="Search Coin Trader" 
-                    className="pl-10 bg-secondary border-border"
+                    placeholder={t("coinTraders.searchCoinTrader")} 
+                    className={`${isRTL ? "pr-10" : "pl-10"} bg-secondary border-border`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -482,34 +484,34 @@ const CoinTraders = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border hover:bg-transparent bg-muted/50">
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">USER</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">UNIQUE ID</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">COIN BALANCE($)</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">SPENT COINS($)</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">MOBILE</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">CREATED DATE</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">STATUS</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">ACTIONS</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.user")}</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.uniqueId")}</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.coinBalance")}</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.spentCoins")}</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.mobile")}</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.createdDate")}</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.status")}</TableHead>
+                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3 text-right">{t("coinTraders.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-8">
-                      <div className="text-muted-foreground">Loading coin traders...</div>
+                      <div className="text-muted-foreground">{t("coinTraders.loadingTraders")}</div>
                     </TableCell>
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-8">
-                      <div className="text-muted-foreground">No coin traders found</div>
+                      <div className="text-muted-foreground">{t("coinTraders.noTradersFound")}</div>
                     </TableCell>
                   </TableRow>
                 ) : (
                   users.map((user) => (
                     <TableRow key={user.uid} className="border-border hover:bg-muted/30 transition-colors">
-                      <TableCell className="px-4 py-3">
-                        <div className="flex items-center gap-3">
+                      <TableCell className="px-4 py-3 text-right">
+                        <div className="flex items-center gap-3 justify-end">
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={user.image} />
                             <AvatarFallback className="bg-muted text-muted-foreground">{user.name?.[0] || 'U'}</AvatarFallback>
@@ -520,29 +522,29 @@ const CoinTraders = () => {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-muted-foreground text-sm font-mono">
+                      <TableCell className="px-4 py-3 text-muted-foreground text-sm font-mono text-right">
                         {user.uid.slice(-8)}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-foreground font-medium text-sm">
+                      <TableCell className="px-4 py-3 text-foreground font-medium text-sm text-right">
                         ${user.coin || 0}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-foreground font-medium text-sm">
+                      <TableCell className="px-4 py-3 text-foreground font-medium text-sm text-right">
                         ${user.coins || 0}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-muted-foreground text-sm">
+                      <TableCell className="px-4 py-3 text-muted-foreground text-sm text-right">
                         {user.mobile || 'Not available'}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-muted-foreground text-sm">
+                      <TableCell className="px-4 py-3 text-muted-foreground text-sm text-right">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-3 text-center">
                         <Switch 
                           checked={!user.isProfilePicBanned}
                           onCheckedChange={() => handleToggleStatus(user)}
                         />
                       </TableCell>
-                      <TableCell className="px-4 py-3">
-                        <div className="flex items-center gap-2">
+                      <TableCell className="px-4 py-3 text-right">
+                        <div className="flex items-center gap-2 justify-end">
                           <Button 
                             variant="ghost" 
                             size="icon"
@@ -580,7 +582,7 @@ const CoinTraders = () => {
           {/* Pagination */}
           <div className="p-4 border-t border-border flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              Showing {startIndex} to {endIndex} of {totalUsers} entries
+              {t("coinTraders.showing", { start: startIndex, end: endIndex, total: totalUsers })}
             </div>
             <div className="flex items-center gap-2">
               <Button 
@@ -653,7 +655,7 @@ const CoinTraders = () => {
         {showScrollTop && (
           <Button 
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+            className={`fixed bottom-8 ${isRTL ? "left-8" : "right-8"} h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90`}
             size="icon"
           >
             <ArrowUp className="h-5 w-5" />
@@ -664,11 +666,11 @@ const CoinTraders = () => {
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Edit {selectedUser?.name}</DialogTitle>
+              <DialogTitle>{t("coinTraders.editUser", { name: selectedUser?.name })}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="countryCode">Country Code</Label>
+                <Label htmlFor="countryCode">{t("coinTraders.countryCode")}</Label>
                 <Input
                   id="countryCode"
                   value={countryCode}
@@ -678,7 +680,7 @@ const CoinTraders = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="mobileNumber">Mobile Number</Label>
+                <Label htmlFor="mobileNumber">{t("coinTraders.mobileNumber")}</Label>
                 <Input
                   id="mobileNumber"
                   value={mobileNumber}
@@ -689,10 +691,10 @@ const CoinTraders = () => {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-                Cancel
+                {t("coinTraders.cancel")}
               </Button>
               <Button onClick={handleUpdateMobile}>
-                Update
+                {t("coinTraders.update")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -702,11 +704,11 @@ const CoinTraders = () => {
         <Dialog open={isCoinModalOpen} onOpenChange={setIsCoinModalOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Adjust Coins for {selectedUser?.name}</DialogTitle>
+              <DialogTitle>{t("coinTraders.adjustCoins", { name: selectedUser?.name })}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="bg-muted/50 p-4 rounded-lg">
-                <p className="text-sm text-muted-foreground">Current Coin Balance</p>
+                <p className="text-sm text-muted-foreground">{t("coinTraders.currentCoinBalance")}</p>
                 <p className="text-2xl font-bold text-foreground">${selectedUser?.coin || 0}</p>
               </div>
               
@@ -717,7 +719,7 @@ const CoinTraders = () => {
                   className="flex-1"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Coins
+                  {t("coinTraders.addCoins")}
                 </Button>
                 <Button
                   variant={!isAddingCoins ? "default" : "outline"}
@@ -725,28 +727,28 @@ const CoinTraders = () => {
                   className="flex-1"
                 >
                   <Minus className="h-4 w-4 mr-2" />
-                  Remove Coins
+                  {t("coinTraders.removeCoins")}
                 </Button>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="coins">Coins to {isAddingCoins ? 'Add' : 'Remove'}</Label>
+                <Label htmlFor="coins">{t("coinTraders.coinsToAddRemove", { action: isAddingCoins ? t('coinTraders.add') : t('coinTraders.remove') })}</Label>
                 <Input
                   id="coins"
                   type="number"
                   min="1"
                   value={coinsToAdd}
                   onChange={(e) => setCoinsToAdd(e.target.value === '' ? '' : parseInt(e.target.value))}
-                  placeholder="Enter amount"
+                  placeholder={t("coinTraders.enterAmount")}
                 />
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsCoinModalOpen(false)}>
-                Cancel
+                {t("coinTraders.cancel")}
               </Button>
               <Button onClick={handleUpdateCoins} disabled={coinsToAdd === '' || Number(coinsToAdd) <= 0}>
-                Update Coins
+                {t("coinTraders.updateCoins")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -756,18 +758,18 @@ const CoinTraders = () => {
         <Dialog open={isHistoryModalOpen} onOpenChange={setIsHistoryModalOpen}>
           <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Transaction History - {selectedUser?.name}</DialogTitle>
+              <DialogTitle>{t("coinTraders.transactionHistory", { name: selectedUser?.name })}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="bg-muted/50 p-4 rounded-lg">
-                <p className="text-sm text-muted-foreground">Current Balance</p>
+                <p className="text-sm text-muted-foreground">{t("coinTraders.currentBalance")}</p>
                 <p className="text-2xl font-bold text-foreground">${selectedUser?.coin || 0}</p>
               </div>
               
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Recent Transactions</h3>
+                <h3 className="text-lg font-semibold">{t("coinTraders.recentTransactions")}</h3>
                 {transactionHistory.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-4">No transactions found</p>
+                  <p className="text-muted-foreground text-center py-4">{t("coinTraders.noTransactionsFound")}</p>
                 ) : (
                   <div className="space-y-2">
                     {transactionHistory.map((transaction) => (
@@ -801,7 +803,7 @@ const CoinTraders = () => {
             </div>
             <DialogFooter>
               <Button onClick={() => setIsHistoryModalOpen(false)}>
-                Close
+                {t("coinTraders.close")}
               </Button>
             </DialogFooter>
           </DialogContent>

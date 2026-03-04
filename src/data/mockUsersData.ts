@@ -5,7 +5,7 @@ export const mockUsersData = [
     name: "Dylan Parker",
     userName: "dylanparker",
     email: "dylan@example.com",
-    image: "https://i.pravatar.cc/96?img=1",
+    image: "https://picsum.photos/seed/dylan/96/96.jpg",
     gender: "Male",
     age: 18,
     country: "India",

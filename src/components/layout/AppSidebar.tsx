@@ -14,13 +14,16 @@ import {
   Coins, 
   Package, 
   CreditCard, 
+  UserCog,
   HelpCircle, 
   Users, 
   Settings, 
   UserCircle, 
   ChevronDown, 
   ChevronRight, 
-  LogOut 
+  LogOut,
+  Globe,
+  Settings2
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -52,6 +55,7 @@ const menuSections = [
       { titleKey: "sidebar.userVerification", url: "/user-verification", icon: UserCheck, hasArrow: false },
       { titleKey: "sidebar.hostApplication", url: "/host-application", icon: FileText, hasArrow: false },
       { titleKey: "sidebar.coinTrader", url: "/coin-trader", icon: Coins, hasArrow: false },
+      { titleKey: "sidebar.rechargeAgents", url: "/recharge-agents", icon: UserCog, hasArrow: false },
     ],
   },
   {
@@ -121,6 +125,8 @@ const menuSections = [
   {
     labelKey: "sidebar.system",
     items: [
+      { titleKey: "sidebar.apiManagement", url: "/api-management", icon: Settings2, hasArrow: false },
+      { titleKey: "sidebar.translations", url: "/translations", icon: Globe, hasArrow: false },
       { titleKey: "sidebar.setting", url: "/settings", icon: Settings, hasArrow: false },
       { titleKey: "sidebar.profile", url: "/profile", icon: UserCircle, hasArrow: false },
     ],
@@ -129,7 +135,7 @@ const menuSections = [
 
 export function AppSidebar({ onLogoutClick }: { onLogoutClick?: () => void } = {}) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
 
   const toggleExpanded = (titleKey: string) => {
     setExpandedItems(prev => 
@@ -140,7 +146,10 @@ export function AppSidebar({ onLogoutClick }: { onLogoutClick?: () => void } = {
   };
 
   return (
-    <Sidebar className="border-r border-sidebar-border bg-[#0a0a0a] w-64">
+    <Sidebar
+      side={isRTL ? "right" : "left"}
+      className={`sidebar ${isRTL ? "border-l" : "border-r"} border-sidebar-border bg-[#0a0a0a] w-64`}
+    >
       <SidebarHeader className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <img 

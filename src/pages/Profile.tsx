@@ -8,6 +8,7 @@ import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/lib/i18n";
 
 interface Admin {
   id: string;
@@ -19,7 +20,8 @@ interface Admin {
   lastLogin?: string;
 }
 
-const Profile = () => {
+export default function Profile() {
+  const { t, isRTL } = useLanguage();
   const [admin, setAdmin] = useState<Admin | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPassword, setCurrentPassword] = useState<string>('');
@@ -42,10 +44,10 @@ const Profile = () => {
         const adminData = adminDoc.data();
         setAdmin({
           id: adminDoc.id,
-          name: adminData.name || 'Admin User',
-          email: adminData.email || 'admin@example.com',
+          name: adminData.name || t('profilePage.adminUser'),
+          email: adminData.email || t('profilePage.adminEmail'),
           avatar: adminData.avatar || '',
-          role: adminData.role || 'Super Admin',
+          role: adminData.role || t('profilePage.superAdmin'),
           createdAt: adminData.createdAt || new Date().toISOString(),
           lastLogin: adminData.lastLogin || new Date().toISOString()
         });
@@ -53,10 +55,10 @@ const Profile = () => {
         // Fallback data
         setAdmin({
           id: '1',
-          name: 'Admin User',
-          email: 'admin@example.com',
+          name: t('profilePage.adminUser'),
+          email: t('profilePage.adminEmail'),
           avatar: '',
-          role: 'Super Admin',
+          role: t('profilePage.superAdmin'),
           createdAt: new Date().toISOString(),
           lastLogin: new Date().toISOString()
         });
@@ -70,12 +72,12 @@ const Profile = () => {
 
   const handleUpdatePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      alert('Please fill in all password fields correctly');
+      alert(t('profilePage.fillAllPasswordFields'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      alert('New passwords do not match');
+      alert(t('profilePage.passwordsDoNotMatch'));
       return;
     }
 
@@ -84,7 +86,7 @@ const Profile = () => {
         await updateDoc(doc(db, 'admins', admin.id), {
           lastLogin: new Date().toISOString()
         });
-        alert('Password updated successfully!');
+        alert(t('profilePage.passwordUpdatedSuccessfully'));
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
@@ -94,12 +96,12 @@ const Profile = () => {
       }
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+      alert(t('profilePage.errorUpdatingPassword'));
     }
   };
 
   const handleResetPassword = async () => {
-    if (!confirm('Are you sure you want to reset the password? This action cannot be undone.')) {
+    if (!confirm(t('profilePage.resetPasswordConfirmation'))) {
       return;
     }
 
@@ -108,7 +110,7 @@ const Profile = () => {
         await updateDoc(doc(db, 'admins', admin.id), {
           lastLogin: new Date().toISOString()
         });
-        alert('Password reset successfully!');
+        alert(t('profilePage.passwordResetSuccessfully'));
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
@@ -118,7 +120,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.error('Error resetting password:', error);
-      alert('Error resetting password');
+      alert(t('profilePage.errorResettingPassword'));
     }
   };
 
@@ -126,7 +128,7 @@ const Profile = () => {
     return (
       <DashboardLayout>
         <div className="min-h-screen bg-background p-6 cairo-font flex items-center justify-center">
-          <div className="text-muted-foreground">Loading profile...</div>
+          <div className="text-muted-foreground">{t("profilePage.loading")}</div>
         </div>
       </DashboardLayout>
     );
@@ -138,19 +140,19 @@ const Profile = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Profile</h1>
-            <p className="text-muted-foreground mt-1">Manage your profile information</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("page.profile")}</h1>
+            <p className="text-muted-foreground mt-1">{t("profilePage.manageProfileInfo")}</p>
           </div>
           <Button variant="outline" className="flex items-center gap-2">
             <RefreshCw className="h-4 w-4" />
-            Refresh
+            {t("profilePage.refresh")}
           </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Information */}
           <Card className="bg-card border-border p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Profile Information</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t("profilePage.profileInformation")}</h2>
             <div className="flex items-center space-y-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage src={admin?.avatar || ''} />
@@ -167,8 +169,8 @@ const Profile = () => {
                   </Badge>
                 )}
                 <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-                  <p><strong>Member Since:</strong> {admin?.createdAt ? new Date(admin.createdAt).toLocaleDateString() : 'N/A'}</p>
-                  <p><strong>Last Login:</strong> {admin?.lastLogin ? new Date(admin.lastLogin).toLocaleString() : 'N/A'}</p>
+                  <p><strong>{t("profilePage.memberSince")}:</strong> {admin?.createdAt ? new Date(admin.createdAt).toLocaleDateString() : t('profilePage.notAvailable')}</p>
+                  <p><strong>{t("profilePage.lastLogin")}:</strong> {admin?.lastLogin ? new Date(admin.lastLogin).toLocaleString() : t('profilePage.notAvailable')}</p>
                 </div>
               </div>
             </div>
@@ -176,17 +178,17 @@ const Profile = () => {
 
           {/* Change Password */}
           <Card className="bg-card border-border p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Change Password</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t("profilePage.changePassword")}</h2>
             <div className="space-y-4">
               {/* Current Password */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Current Password</label>
+                <label className="block text-sm font-medium text-foreground mb-2">{t("profilePage.currentPassword")}</label>
                 <div className="relative">
                   <Input
                     type={showCurrentPassword ? "text" : "password"}
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Enter current password"
+                    placeholder={t("profilePage.enterCurrentPassword")}
                     className="pr-10"
                   />
                   <Button
@@ -203,25 +205,25 @@ const Profile = () => {
 
               {/* New Password */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">New Password</label>
+                <label className="block text-sm font-medium text-foreground mb-2">{t("profilePage.newPassword")}</label>
                 <Input
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
+                  placeholder={t("profilePage.enterNewPassword")}
                   className="pr-10"
                 />
               </div>
 
               {/* Confirm New Password */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Confirm New Password</label>
+                <label className="block text-sm font-medium text-foreground mb-2">{t("profilePage.confirmNewPassword")}</label>
                 <div className="relative">
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm new password"
+                    placeholder={t("profilePage.confirmNewPassword")}
                     className="pr-10"
                   />
                   <Button
@@ -244,7 +246,7 @@ const Profile = () => {
                   disabled={!currentPassword || !newPassword || !confirmPassword}
                 >
                   <Lock className="h-4 w-4 mr-2" />
-                  Update Password
+                  {t("profilePage.updatePassword")}
                 </Button>
                 <Button
                   onClick={handleResetPassword}
@@ -252,7 +254,7 @@ const Profile = () => {
                   className="hover:bg-destructive/10"
                 >
                   <RotateCcw className="h-4 w-4 mr-2" />
-                  Reset
+                  {t("profilePage.reset")}
                 </Button>
               </div>
             </div>
@@ -261,6 +263,4 @@ const Profile = () => {
       </div>
     </DashboardLayout>
   );
-};
-
-export default Profile;
+}

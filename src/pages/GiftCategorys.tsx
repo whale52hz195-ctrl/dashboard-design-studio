@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, ChevronLeft, ChevronRight } from "lucide-re
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface GiftCategory {
   id: string;
@@ -15,6 +16,7 @@ interface GiftCategory {
 }
 
 const GiftCategorys = () => {
+  const { t, isRTL } = useLanguage();
   const [categories, setCategories] = useState<GiftCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -232,15 +234,15 @@ const GiftCategorys = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white">Gift Categories</h1>
-            <p className="text-gray-400 mt-1">Manage your gift categories</p>
+            <h1 className="text-3xl font-bold text-white">{t("giftCategoryPage.title")}</h1>
+            <p className="text-gray-400 mt-1">{t("giftCategoryPage.manageGiftCategories")}</p>
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Add Category
+            {t("giftCategoryPage.addCategory")}
           </button>
         </div>
 
@@ -249,7 +251,7 @@ const GiftCategorys = () => {
           <div className="flex items-center gap-4">
             {/* Entries per page */}
             <div className="flex items-center gap-2">
-              <label className="text-gray-400 text-sm">Show</label>
+              <label className="text-gray-400 text-sm">{t("giftCategoryPage.show")}</label>
               <select
                 value={entriesPerPage}
                 onChange={(e) => {
@@ -263,22 +265,22 @@ const GiftCategorys = () => {
                 <option value={25}>25</option>
                 <option value={50}>50</option>
               </select>
-              <label className="text-gray-400 text-sm">entries</label>
+              <label className="text-gray-400 text-sm">{t("giftCategoryPage.entries")}</label>
             </div>
           </div>
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5`} />
             <input
               type="text"
-              placeholder="Search Categories"
+              placeholder={t("giftCategoryPage.searchCategories")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
+              className={`bg-gray-800 border border-gray-700 rounded-lg ${isRTL ? "pr-10 pl-4" : "pl-10 pr-4"} py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64`}
             />
           </div>
         </div>
@@ -289,31 +291,23 @@ const GiftCategorys = () => {
             <table className="w-full">
               <thead className="bg-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    CATEGORY NAME
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    CREATED DATE
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    LAST UPDATED
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    ACTIONS
-                  </th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftCategoryPage.categoryName")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftCategoryPage.createdDate")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftCategoryPage.lastUpdated")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftCategoryPage.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {loading ? (
                   <tr>
                     <td colSpan={4} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">Loading categories...</div>
+                      <div className="text-gray-400">{t("giftCategoryPage.loadingCategories")}</div>
                     </td>
                   </tr>
                 ) : paginatedCategories.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">No categories found</div>
+                      <div className="text-gray-400">{t("giftCategoryPage.noCategoriesFound")}</div>
                     </td>
                   </tr>
                 ) : (
@@ -321,7 +315,7 @@ const GiftCategorys = () => {
                     <tr key={category.id} className="hover:bg-gray-750 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-white font-medium">{category.name}</div>
-                        <div className="text-gray-400 text-sm">{category.giftCount} gifts</div>
+                        <div className="text-gray-400 text-sm">{category.giftCount} {t("giftCategoryPage.gifts")}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
                         {formatDate(category.createdAt)}
@@ -355,7 +349,7 @@ const GiftCategorys = () => {
           {/* Pagination */}
           <div className="bg-gray-700 px-6 py-4 flex items-center justify-between">
             <div className="text-gray-400 text-sm">
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredCategories.length)} of {filteredCategories.length} entries
+              {t("giftCategoryPage.showing", { start: startIndex + 1, end: Math.min(endIndex, filteredCategories.length), total: filteredCategories.length })}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -427,24 +421,24 @@ const GiftCategorys = () => {
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Add New Category</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("giftCategoryPage.addNewCategory")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Category Name</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftCategoryPage.categoryNameLabel")}</label>
                   <input
                     type="text"
                     value={newCategory.name || ''}
                     onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter category name"
+                    placeholder={t("giftCategoryPage.enterCategoryName")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Description (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftCategoryPage.descriptionOptional")}</label>
                   <textarea
                     value={newCategory.description || ''}
                     onChange={(e) => setNewCategory(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Enter category description"
+                    placeholder={t("giftCategoryPage.enterCategoryDescription")}
                     rows={3}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
@@ -454,13 +448,13 @@ const GiftCategorys = () => {
                     onClick={() => setShowCreateModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("giftCategoryPage.cancel")}
                   </button>
                   <button
                     onClick={handleCreateCategory}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Add Category
+                    {t("giftCategoryPage.addCategoryButton")}
                   </button>
                 </div>
               </div>
@@ -472,24 +466,24 @@ const GiftCategorys = () => {
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Edit Category</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("giftCategoryPage.editCategory")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Category Name</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftCategoryPage.categoryNameLabel")}</label>
                   <input
                     type="text"
                     value={newCategory.name || ''}
                     onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter category name"
+                    placeholder={t("giftCategoryPage.enterCategoryName")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Description (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftCategoryPage.descriptionOptional")}</label>
                   <textarea
                     value={newCategory.description || ''}
                     onChange={(e) => setNewCategory(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Enter category description"
+                    placeholder={t("giftCategoryPage.enterCategoryDescription")}
                     rows={3}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
@@ -499,13 +493,13 @@ const GiftCategorys = () => {
                     onClick={() => setShowEditModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("giftCategoryPage.cancel")}
                   </button>
                   <button
                     onClick={handleEditCategory}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Update Category
+                    {t("giftCategoryPage.updateCategory")}
                   </button>
                 </div>
               </div>

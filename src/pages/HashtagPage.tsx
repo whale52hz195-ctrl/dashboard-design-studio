@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, ChevronLeft, ChevronRight } from "lucide-re
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface Hashtag {
   id: string;
@@ -13,6 +14,7 @@ interface Hashtag {
 }
 
 const HashtagPage = () => {
+  const { t, isRTL } = useLanguage();
   const [hashtags, setHashtags] = useState<Hashtag[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -212,15 +214,15 @@ const HashtagPage = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white">Hashtags</h1>
-            <p className="text-gray-400 mt-1">Create and manage trending hashtags</p>
+            <h1 className="text-3xl font-bold text-white">{t("page.hashtag")}</h1>
+            <p className="text-gray-400 mt-1">{t("hashtagPage.createManageHashtags")}</p>
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Create Hashtag
+            {t("hashtagPage.createHashtag")}
           </button>
         </div>
 
@@ -229,7 +231,7 @@ const HashtagPage = () => {
           <div className="flex items-center gap-4">
             {/* Entries per page */}
             <div className="flex items-center gap-2">
-              <label className="text-gray-400 text-sm">Show</label>
+              <label className="text-gray-400 text-sm">{t("hashtagPage.show")}</label>
               <select
                 value={entriesPerPage}
                 onChange={(e) => {
@@ -243,22 +245,22 @@ const HashtagPage = () => {
                 <option value={25}>25</option>
                 <option value={50}>50</option>
               </select>
-              <label className="text-gray-400 text-sm">entries</label>
+              <label className="text-gray-400 text-sm">{t("hashtagPage.entries")}</label>
             </div>
           </div>
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5`} />
             <input
               type="text"
-              placeholder="Search hashtags..."
+              placeholder={t("hashtagPage.searchHashtags")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
+              className={`bg-gray-800 border border-gray-700 rounded-lg ${isRTL ? "pr-10 pl-4" : "pl-10 pr-4"} py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64`}
             />
           </div>
         </div>
@@ -269,34 +271,24 @@ const HashtagPage = () => {
             <table className="w-full">
               <thead className="bg-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    HASHTAG
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    USAGE COUNT
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    CREATED AT
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    UPDATED AT
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    ACTIONS
-                  </th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("hashtagPage.hashtag")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("hashtagPage.usageCount")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("hashtagPage.createdAt")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("hashtagPage.updatedAt")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("hashtagPage.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {loading ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">Loading hashtags...</div>
+                      <div className="text-gray-400">{t("hashtagPage.loadingHashtags")}</div>
                     </td>
                   </tr>
                 ) : paginatedHashtags.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">No hashtags found</div>
+                      <div className="text-gray-400">{t("hashtagPage.noHashtagsFound")}</div>
                     </td>
                   </tr>
                 ) : (
@@ -340,7 +332,7 @@ const HashtagPage = () => {
           {/* Pagination */}
           <div className="bg-gray-700 px-6 py-4 flex items-center justify-between">
             <div className="text-gray-400 text-sm">
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredHashtags.length)} of {filteredHashtags.length} entries
+              {t("hashtagPage.showing", { start: startIndex + 1, end: Math.min(endIndex, filteredHashtags.length), total: filteredHashtags.length })}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -412,15 +404,15 @@ const HashtagPage = () => {
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Create Hashtag</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("hashtagPage.createHashtagTitle")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Hashtag</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("hashtagPage.hashtagLabel")}</label>
                   <input
                     type="text"
                     value={newHashtag.hashtag || ''}
                     onChange={(e) => setNewHashtag(prev => ({ ...prev, hashtag: e.target.value }))}
-                    placeholder="Enter hashtag (e.g., #trending)"
+                    placeholder={t("hashtagPage.enterHashtag")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -429,13 +421,13 @@ const HashtagPage = () => {
                     onClick={() => setShowCreateModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("hashtagPage.cancel")}
                   </button>
                   <button
                     onClick={handleCreateHashtag}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Create Hashtag
+                    {t("hashtagPage.createHashtagButton")}
                   </button>
                 </div>
               </div>
@@ -447,15 +439,15 @@ const HashtagPage = () => {
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Edit Hashtag</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("hashtagPage.editHashtagTitle")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Hashtag</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("hashtagPage.hashtagLabel")}</label>
                   <input
                     type="text"
                     value={newHashtag.hashtag || ''}
                     onChange={(e) => setNewHashtag(prev => ({ ...prev, hashtag: e.target.value }))}
-                    placeholder="Enter hashtag (e.g., #trending)"
+                    placeholder={t("hashtagPage.enterHashtag")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -464,13 +456,13 @@ const HashtagPage = () => {
                     onClick={() => setShowEditModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("hashtagPage.cancel")}
                   </button>
                   <button
                     onClick={handleEditHashtag}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Update Hashtag
+                    {t("hashtagPage.updateHashtag")}
                   </button>
                 </div>
               </div>

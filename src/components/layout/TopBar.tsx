@@ -1,7 +1,6 @@
-import { Search, Bell, Globe } from "lucide-react";
+import { Search, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SearchModal } from "@/components/shared/SearchModal";
 import { useState } from "react";
 import { useLanguage } from "@/lib/i18n";
@@ -40,14 +39,6 @@ export function TopBar() {
               {language === "en" ? "AR" : "EN"}
             </span>
           </button>
-          <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
-            <Bell className="h-5 w-5 text-muted-foreground" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
-          </button>
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="https://i.pravatar.cc/40?img=8" />
-            <AvatarFallback>AD</AvatarFallback>
-          </Avatar>
         </div>
       </header>
 

@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, ChevronLeft, ChevronRight, Settings } from 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface GiftBanner {
   id: string;
@@ -14,6 +15,7 @@ interface GiftBanner {
 }
 
 const GiftPage = () => {
+  const { t, isRTL } = useLanguage();
   const [banners, setBanners] = useState<GiftBanner[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -187,8 +189,8 @@ const GiftPage = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white">Gift Announcement Banner</h1>
-            <p className="text-gray-400 mt-1">Manage your gift banner</p>
+            <h1 className="text-3xl font-bold text-white">{t("page.giftBanner")}</h1>
+            <p className="text-gray-400 mt-1">{t("giftPage.manageGiftBanner")}</p>
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
@@ -202,7 +204,7 @@ const GiftPage = () => {
         {/* Stats */}
         <div className="mb-6">
           <div className="text-gray-300">
-            Total Banners: <span className="text-white font-medium">{banners.length}</span>
+            {t("giftPage.totalBanners")}: <span className="text-white font-medium">{banners.length}</span>
           </div>
         </div>
 
@@ -211,7 +213,7 @@ const GiftPage = () => {
           <div className="flex items-center gap-4">
             {/* Entries per page */}
             <div className="flex items-center gap-2">
-              <label className="text-gray-400 text-sm">Show</label>
+              <label className="text-gray-400 text-sm">{t("giftPage.show")}</label>
               <select
                 value={entriesPerPage}
                 onChange={(e) => {
@@ -225,22 +227,22 @@ const GiftPage = () => {
                 <option value={25}>25</option>
                 <option value={50}>50</option>
               </select>
-              <label className="text-gray-400 text-sm">entries</label>
+              <label className="text-gray-400 text-sm">{t("giftPage.entries")}</label>
             </div>
           </div>
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5`} />
             <input
               type="text"
-              placeholder="Search ⌘K"
+              placeholder={t("common.search")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
+              className={`bg-gray-800 border border-gray-700 rounded-lg ${isRTL ? "pr-10 pl-4" : "pl-10 pr-4"} py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64`}
             />
           </div>
         </div>
@@ -251,37 +253,25 @@ const GiftPage = () => {
             <table className="w-full">
               <thead className="bg-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    IMAGE
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    REDIRECT URL
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    STATUS
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    CREATED DATE
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    LAST UPDATED
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    ACTIONS
-                  </th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftPage.image")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftPage.redirectUrl")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftPage.status")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftPage.createdDate")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftPage.lastUpdated")}</th>
+                  <th className={`px-6 py-4 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? "text-right" : "text-left"}`}>{t("giftPage.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {loading ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">Loading banners...</div>
+                      <div className="text-gray-400">{t("giftPage.loadingBanners")}</div>
                     </td>
                   </tr>
                 ) : paginatedBanners.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center">
-                      <div className="text-gray-400">No banners found</div>
+                      <div className="text-gray-400">{t("giftPage.noBannersFound")}</div>
                     </td>
                   </tr>
                 ) : (
@@ -291,7 +281,7 @@ const GiftPage = () => {
                         <div className="flex items-center">
                           <img 
                             src={banner.image} 
-                            alt="Banner" 
+                            alt={t("giftPage.banner")} 
                             className="h-12 w-20 object-cover rounded-lg shadow-md"
                             onLoad={(e) => {
                               console.log('Image loaded successfully:', banner.image);
@@ -355,7 +345,7 @@ const GiftPage = () => {
           {/* Pagination */}
           <div className="bg-gray-700 px-6 py-4 flex items-center justify-between">
             <div className="text-gray-400 text-sm">
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredBanners.length)} of {filteredBanners.length} entries
+              {t("giftPage.showing", { start: startIndex + 1, end: Math.min(endIndex, filteredBanners.length), total: filteredBanners.length })}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -427,25 +417,25 @@ const GiftPage = () => {
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Add New Banner</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("giftPage.addNewBanner")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Image URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftPage.imageUrl")}</label>
                   <input
                     type="text"
                     value={newBanner.image || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="Enter image URL"
+                    placeholder={t("giftPage.enterImageUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Redirect URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftPage.redirectUrlLabel")}</label>
                   <input
                     type="text"
                     value={newBanner.redirectUrl || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, redirectUrl: e.target.value }))}
-                    placeholder="Enter redirect URL"
+                    placeholder={t("giftPage.enterRedirectUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -454,13 +444,13 @@ const GiftPage = () => {
                     onClick={() => setShowCreateModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("giftPage.cancel")}
                   </button>
                   <button
                     onClick={handleCreateBanner}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Add Banner
+                    {t("giftPage.addBanner")}
                   </button>
                 </div>
               </div>
@@ -472,25 +462,25 @@ const GiftPage = () => {
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-semibold text-white mb-4">Edit Banner</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("giftPage.editBanner")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Image URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftPage.imageUrl")}</label>
                   <input
                     type="text"
                     value={newBanner.image || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="Enter image URL"
+                    placeholder={t("giftPage.enterImageUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Redirect URL</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t("giftPage.redirectUrlLabel")}</label>
                   <input
                     type="text"
                     value={newBanner.redirectUrl || ''}
                     onChange={(e) => setNewBanner(prev => ({ ...prev, redirectUrl: e.target.value }))}
-                    placeholder="Enter redirect URL"
+                    placeholder={t("giftPage.enterRedirectUrl")}
                     className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -499,13 +489,13 @@ const GiftPage = () => {
                     onClick={() => setShowEditModal(false)}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                   >
-                    Cancel
+                    {t("giftPage.cancel")}
                   </button>
                   <button
                     onClick={handleEditBanner}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                   >
-                    Update Banner
+                    {t("giftPage.updateBanner")}
                   </button>
                 </div>
               </div>

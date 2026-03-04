@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/i18n";
 
 // Define Coin Plan interface based on Firestore structure
 interface CoinPlan {
@@ -37,6 +38,7 @@ interface CoinPlan {
 
 const CoinPlans = () => {
   const { toast } = useToast();
+  const { t, isRTL } = useLanguage();
   const [coinPlans, setCoinPlans] = useState<CoinPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -249,10 +251,10 @@ const CoinPlans = () => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex-1 max-w-md">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
               <Input 
-                placeholder="Search Coin Plan" 
-                className="pl-10 bg-secondary border-border"
+                placeholder={t("coinPlansPage.searchCoinPlan")} 
+                className={`${isRTL ? "pr-10 pl-4" : "pl-10"} bg-secondary border-border`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -280,18 +282,18 @@ const CoinPlans = () => {
                 }}
               >
                 <Plus className="h-4 w-4" />
-                Create Coin Plan
+                {t("coinPlansPage.createCoinPlan")}
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-card border-border text-foreground max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">
-                  {editingPlan ? "Edit Coin Plan" : "Create Coin Plan"}
+                  {editingPlan ? t("coinPlansPage.editCoinPlan") : t("coinPlansPage.createCoinPlan")}
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
-                  <Label htmlFor="coins" className="text-sm font-medium">Coins</Label>
+                  <Label htmlFor="coins" className="text-sm font-medium">{t("coinPlansPage.coins")}</Label>
                   <Input
                     id="coins"
                     type="number"
@@ -303,7 +305,7 @@ const CoinPlans = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="amount" className="text-sm font-medium">Amount ($)</Label>
+                  <Label htmlFor="amount" className="text-sm font-medium">{t("coinPlansPage.amount")}</Label>
                   <Input
                     id="amount"
                     type="number"
@@ -316,7 +318,7 @@ const CoinPlans = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="productKey" className="text-sm font-medium">Product Key</Label>
+                  <Label htmlFor="productKey" className="text-sm font-medium">{t("coinPlansPage.productKey")}</Label>
                   <Input
                     id="productKey"
                     placeholder="plan_0"
@@ -327,7 +329,7 @@ const CoinPlans = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="name" className="text-sm font-medium">Plan Name</Label>
+                  <Label htmlFor="name" className="text-sm font-medium">{t("coinPlansPage.planName")}</Label>
                   <Input
                     id="name"
                     placeholder="Quick Charge"
@@ -338,7 +340,7 @@ const CoinPlans = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="icon" className="text-sm font-medium">Icon</Label>
+                  <Label htmlFor="icon" className="text-sm font-medium">{t("coinPlansPage.icon")}</Label>
                   <Input
                     id="icon"
                     placeholder="🪙"
@@ -355,7 +357,7 @@ const CoinPlans = () => {
                       checked={formData.featured}
                       onCheckedChange={(checked) => handleInputChange('featured', checked)}
                     />
-                    <Label htmlFor="featured" className="text-sm font-medium">Featured</Label>
+                    <Label htmlFor="featured" className="text-sm font-medium">{t("coinPlansPage.featured")}</Label>
                   </div>
                   
                   <div className="flex items-center gap-2">
@@ -364,7 +366,7 @@ const CoinPlans = () => {
                       checked={formData.popular}
                       onCheckedChange={(checked) => handleInputChange('popular', checked)}
                     />
-                    <Label htmlFor="popular" className="text-sm font-medium">Popular</Label>
+                    <Label htmlFor="popular" className="text-sm font-medium">{t("coinPlansPage.popular")}</Label>
                   </div>
                 </div>
                 
@@ -374,13 +376,13 @@ const CoinPlans = () => {
                     className="flex-1 bg-secondary border-border"
                     onClick={() => setIsCreateModalOpen(false)}
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </Button>
                   <Button 
                     className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
                     onClick={handleSubmit}
                   >
-                    Submit
+                    {t("common.submit")}
                   </Button>
                 </div>
               </div>
@@ -390,8 +392,8 @@ const CoinPlans = () => {
 
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Coin Plans</h1>
-          <p className="text-muted-foreground mt-1">Manage and monitor coin purchase plans</p>
+          <h1 className="text-3xl font-bold text-foreground">{t("page.coinPlans")}</h1>
+          <p className="text-muted-foreground mt-1">{t("coinPlansPage.manageMonitorPlans")}</p>
         </div>
 
         {/* Coin Plans Table */}
@@ -400,26 +402,26 @@ const CoinPlans = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border hover:bg-transparent bg-muted/50">
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">NO</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">COINS</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">AMOUNT ($)</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">PRODUCT KEY</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">POPULAR</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">ACTIVE</TableHead>
-                  <TableHead className="text-muted-foreground font-semibold uppercase text-xs px-4 py-3">ACTIONS</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("coinPlansPage.no")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("coinPlansPage.coinsHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("coinPlansPage.amountHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("coinPlansPage.productKeyHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("coinPlansPage.popularHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("coinPlansPage.activeHeader")}</TableHead>
+                  <TableHead className={`text-muted-foreground font-semibold uppercase text-xs px-4 py-3 ${isRTL ? "text-right" : "text-left"}`}>{t("common.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
-                      <div className="text-muted-foreground">Loading coin plans...</div>
+                      <div className="text-muted-foreground">{t("coinPlansPage.loadingCoinPlans")}</div>
                     </TableCell>
                   </TableRow>
                 ) : coinPlans.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
-                      <div className="text-muted-foreground">No coin plans found. Click 'Create Coin Plan' to create your first plan.</div>
+                      <div className="text-muted-foreground">{t("coinPlansPage.noCoinPlansFound")}</div>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -434,7 +436,7 @@ const CoinPlans = () => {
                           <div>
                             <div className="font-medium text-foreground">{plan.coins.toLocaleString()}</div>
                             {plan.bonus > 0 && (
-                              <div className="text-xs text-green-500">+{plan.bonus} bonus</div>
+                              <div className="text-xs text-green-500">+{plan.bonus} {t("coinPlansPage.bonus")}</div>
                             )}
                           </div>
                         </div>
@@ -454,8 +456,8 @@ const CoinPlans = () => {
                         <div className="flex items-center gap-2">
                           {plan.popular && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
                           {plan.featured && <Package className="h-4 w-4 text-blue-500" />}
-                          {plan.popular && <span className="text-xs text-muted-foreground">Popular</span>}
-                          {plan.featured && <span className="text-xs text-muted-foreground">Featured</span>}
+                          {plan.popular && <span className="text-xs text-muted-foreground">{t("coinPlansPage.popular")}</span>}
+                          {plan.featured && <span className="text-xs text-muted-foreground">{t("coinPlansPage.featured")}</span>}
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3">

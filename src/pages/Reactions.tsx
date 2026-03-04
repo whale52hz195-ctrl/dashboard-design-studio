@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/lib/i18n";
 
 interface Reaction {
   id: string;
@@ -15,6 +16,7 @@ interface Reaction {
 }
 
 const Reactions = () => {
+  const { t, isRTL } = useLanguage();
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -165,15 +167,15 @@ const Reactions = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">Reactions</h1>
-            <p className="text-gray-400 mt-1">Manage your reactions</p>
+            <h1 className="text-3xl font-bold text-white">{t("page.reactions")}</h1>
+            <p className="text-gray-400 mt-1">{t("reactionsPage.manageReactions")}</p>
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Create Reaction
+            {t("reactionsPage.createReaction")}
           </button>
         </div>
 
@@ -181,7 +183,7 @@ const Reactions = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-20">
-              <div className="text-gray-400">Loading reactions...</div>
+              <div className="text-gray-400">{t("reactionsPage.loadingReactions")}</div>
             </div>
           ) : (
             reactions.map((reaction) => (
@@ -196,13 +198,13 @@ const Reactions = () => {
                 <div className="p-4">
                   {/* Category */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-gray-400 text-sm">Category</span>
+                    <span className="text-gray-400 text-sm">{t("reactionsPage.category")}</span>
                     <span className="text-white text-sm font-medium">{reaction.category}</span>
                   </div>
                   
                   {/* Status */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-gray-400 text-sm">Status</span>
+                    <span className="text-gray-400 text-sm">{t("common.status")}</span>
                     <span className={`text-sm font-medium ${
                       reaction.status === 'Active' ? 'text-green-400' : 'text-gray-400'
                     }`}>
@@ -212,13 +214,13 @@ const Reactions = () => {
                   
                   {/* Usage Count */}
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-gray-400 text-sm">Usage Count</span>
+                    <span className="text-gray-400 text-sm">{t("reactionsPage.usageCount")}</span>
                     <span className="text-white text-sm font-medium">{reaction.usageCount.toLocaleString()}</span>
                   </div>
                   
                   {/* Added Date */}
                   <div className="text-gray-400 text-sm mb-4">
-                    Added on {formatDate(reaction.createdAt)}
+                    {t("reactionsPage.addedOn")} {formatDate(reaction.createdAt)}
                   </div>
                   
                   {/* Action Buttons */}
@@ -247,39 +249,39 @@ const Reactions = () => {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-            <h2 className="text-xl font-semibold text-white mb-4">Create Reaction</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">{t("reactionsPage.createReactionTitle")}</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Reaction Name</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t("reactionsPage.reactionName")}</label>
                 <input
                   type="text"
                   value={newReaction.name || ''}
                   onChange={(e) => setNewReaction(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Enter reaction name"
+                  placeholder={t("reactionsPage.enterReactionName")}
                   className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Emoji</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t("reactionsPage.emoji")}</label>
                 <input
                   type="text"
                   value={newReaction.emoji || ''}
                   onChange={(e) => setNewReaction(prev => ({ ...prev, emoji: e.target.value }))}
-                  placeholder="Enter emoji (e.g., 👍)"
+                  placeholder={t("reactionsPage.enterEmoji")}
                   className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t("reactionsPage.category")}</label>
                 <select
                   value={newReaction.category || 'General'}
                   onChange={(e) => setNewReaction(prev => ({ ...prev, category: e.target.value }))}
                   className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  <option value="Positive">Positive</option>
-                  <option value="Love">Love</option>
-                  <option value="Negative">Negative</option>
-                  <option value="General">General</option>
+                  <option value="Positive">{t("reactionsPage.positive")}</option>
+                  <option value="Love">{t("reactionsPage.love")}</option>
+                  <option value="Negative">{t("reactionsPage.negative")}</option>
+                  <option value="General">{t("reactionsPage.general")}</option>
                 </select>
               </div>
               <div className="flex gap-3 justify-end pt-4">
@@ -287,13 +289,13 @@ const Reactions = () => {
                   onClick={() => setShowCreateModal(false)}
                   className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   onClick={handleCreateReaction}
                   className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                 >
-                  Create Reaction
+                  {t("reactionsPage.createReactionButton")}
                 </button>
               </div>
             </div>

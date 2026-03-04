@@ -13,6 +13,7 @@ import { collection, getDocs, query, orderBy, limit, startAfter, DocumentData, w
 import { db } from "@/lib/firebase";
 import UserDetailsModal from "@/components/UserDetailsModal";
 import UserProfileScreen from "@/components/UserProfileScreen";
+import { useLanguage } from "@/lib/i18n";
 
 // Define User interface based on Firestore structure
 interface User {
@@ -46,6 +47,7 @@ interface User {
 }
 
 const UserManagement = () => {
+  const { t, isRTL } = useLanguage();
   const [users, setUsers] = useState<User[]>([]);
   const [stats, setStats] = useState({ total: 0, males: 0, females: 0, vips: 0 });
   const [loading, setLoading] = useState(true);
@@ -262,7 +264,7 @@ const UserManagement = () => {
               <Settings className="h-5 w-5" />
             </Button>
             <Avatar className="h-8 w-8">
-              <AvatarImage src="https://i.pravatar.cc/32?img=1" />
+              <AvatarImage src="https://picsum.photos/seed/32?img=1" />
               <AvatarFallback>A</AvatarFallback>
             </Avatar>
           </div>
@@ -270,8 +272,8 @@ const UserManagement = () => {
 
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">User Management</h1>
-          <p className="text-muted-foreground mt-1">Manage and monitor user accounts</p>
+          <h1 className="text-3xl font-bold text-foreground">{t("users.title")}</h1>
+          <p className="text-muted-foreground mt-1">{t("users.subtitle")}</p>
         </div>
 
         {/* Stats Cards */}
@@ -279,7 +281,7 @@ const UserManagement = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total users</p>
+                <p className="text-sm text-muted-foreground">{t("users.totalUsers")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{stats.total}</p>
               </div>
               <div className="h-12 w-12 rounded-lg bg-green-500/20 flex items-center justify-center">
@@ -291,7 +293,7 @@ const UserManagement = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Males</p>
+                <p className="text-sm text-muted-foreground">{t("users.males")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{stats.males}</p>
               </div>
               <div className="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center">
@@ -303,7 +305,7 @@ const UserManagement = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Females</p>
+                <p className="text-sm text-muted-foreground">{t("users.females")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{stats.females}</p>
               </div>
               <div className="h-12 w-12 rounded-lg bg-red-500/20 flex items-center justify-center">
@@ -315,7 +317,7 @@ const UserManagement = () => {
           <Card className="bg-card border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">VIP users</p>
+                <p className="text-sm text-muted-foreground">{t("users.vipUsers")}</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{stats.vips}</p>
               </div>
               <div className="h-12 w-12 rounded-lg bg-orange-500/20 flex items-center justify-center">
@@ -373,10 +375,10 @@ const UserManagement = () => {
               
               <div className="flex-1 max-w-sm">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground`} />
                   <Input 
-                    placeholder="Search User" 
-                    className="pl-10 bg-secondary border-border"
+                    placeholder={t("users.searchUser")} 
+                    className={`${isRTL ? "pr-10" : "pl-10"} bg-secondary border-border`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -389,7 +391,7 @@ const UserManagement = () => {
                 onClick={handleDateFilter}
               >
                 <Calendar className="h-4 w-4" />
-                Filter by Date
+                {t("users.filterByDate")}
               </Button>
               
               <Select 
@@ -413,7 +415,7 @@ const UserManagement = () => {
                   className="bg-secondary border-border flex items-center gap-2"
                   onClick={clearFilters}
                 >
-                  Clear Filters
+                  {t("users.clearFilters")}
                 </Button>
               )}
             </div>
@@ -448,13 +450,13 @@ const UserManagement = () => {
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={17} className="text-center py-8">
-                      <div className="text-muted-foreground">Loading users...</div>
+                      <div className="text-muted-foreground">{t("users.loadingUsers")}</div>
                     </TableCell>
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={17} className="text-center py-8">
-                      <div className="text-muted-foreground">No users found</div>
+                      <div className="text-muted-foreground">{t("users.noUsers")}</div>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -554,7 +556,7 @@ const UserManagement = () => {
           {/* Pagination */}
           <div className="p-4 border-t border-border flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              Showing {startIndex} to {endIndex} of {totalUsers} entries
+              {t("users.showing")} {startIndex} {t("users.to")} {endIndex} {t("users.of")} {totalUsers} {t("users.entries")}
             </div>
             <div className="flex items-center gap-2">
               <Button 
@@ -627,7 +629,7 @@ const UserManagement = () => {
         {showScrollTop && (
           <Button 
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+            className={`fixed bottom-8 ${isRTL ? "left-8" : "right-8"} h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90`}
             size="icon"
           >
             <ArrowUp className="h-5 w-5" />
